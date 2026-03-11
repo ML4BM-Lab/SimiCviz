@@ -64,6 +64,9 @@ cell_labels_old = read.csv(cell_labels_path, header = FALSE)$V1
 head(cell_labels_old)
 
 ## ---------------------------------------------------------
+cell_labels_path <- system.file("extdata",file.path("inputFiles","treatment_annotation.csv"), package = "SimiCviz")
+
+## ---------------------------------------------------------
 simic2 <- SimiCvizExperiment(weights = weights_results,
                              auc = auc_collect,
                              cell_labels = cell_labels_new,
@@ -203,10 +206,64 @@ plot_target_weights(simic,
 ## ----fig.height=8, fig.width=10, eval = FALSE-------------
 #  plot_network(simic, top_n = 4)
 
+## ---------------------------------------------------------
+dis_score <- calculate_dissimilarity(simic)
+top_tfs <- rownames(dis_score)
+
+## ---------------------------------------------------------
+plot_dissimilarity_heatmap(simic, 
+                           top_n = 15, 
+                           save = TRUE,
+                           out_dir = plot_dir,
+                           cmap = "viridis",
+                           filename = "dissimilarity_heatmap_top15.pdf")
+
+## ----fig.height=8, fig.width=7, echo=FALSE----------------
+plot_dissimilarity_heatmap(simic, top_n = 15, cmap = "viridis", save = FALSE)
+
+## ---------------------------------------------------------
+# Build cell groups from metadata (e.g. Seurat clusters, cell types, etc.)
+cell_groups_df = read.csv(cell_labels_path)
+cell_groups  <- lapply(unique(cell_groups_df$final_annotation_functional), function(celltype) {
+  cell_groups_df$Cell[cell_groups_df$final_annotation_functional == celltype]
+})
+names(cell_groups) <- unique(cell_groups_df$final_annotation_functional)
+
+dissim_grouped <- calculate_dissimilarity(simic, labels = c(0,2), cell_groups = cell_groups)
+
+plot_dissimilarity_heatmap(simic,
+                            cell_groups = cell_groups, 
+                            top_n = 15,
+                            cmap=c("magma"),
+                            save = TRUE, out_dir = plot_dir,
+                            filename = "dissimilarity_heatmap_grouped.pdf")
+
+
+## ----fig.height=8, fig.width=7, echo=FALSE----------------
+plot_dissimilarity_heatmap(simic,
+                            cell_groups = cell_groups, 
+                            top_n = 15,
+                            cmap=c("magma"),
+                            save = FALSE)
+
+## ----fig.height=8, fig.width=7----------------------------
+plot_dissimilarity_heatmap(simic,
+                            cell_groups = cell_groups, 
+                            top_n = 15, 
+                            sort_by = "Proliferating.cells",
+                            cmap=c("red", "white", "blue"),
+                            save = FALSE)
+plot_dissimilarity_heatmap(simic,
+                            cell_groups = cell_groups, 
+                            top_n = 15, 
+                            sort_by = "mean_score",
+                            cmap=c("purple"),
+                            save = FALSE)                         
+
 ## ----message=FALSE----------------------------------------
 # Plot top 4 TFs density distributions
 plot_auc_distributions(simic,
-                       tf_names = simic@tf_ids[1:4],
+                       tf_names = top_tfs[1:4],
                        fill = TRUE,
                        alpha = .6,
                        bw_adjust = 1/8,
@@ -220,7 +277,7 @@ plot_auc_distributions(simic,
 ## ----echo = FALSE ,fig.height=10, fig.width=15------------
 # Plot top 4 TFs density distributions
 plot_auc_distributions(simic,
-                       tf_names = simic@tf_ids[1:4],
+                       tf_names = top_tfs[1:4],
                        fill = TRUE,
                        alpha = 0.6,
                        bw_adjust = 1/8,
@@ -232,7 +289,7 @@ plot_auc_distributions(simic,
 # Plot top 6 TFs density distributions
 plot_auc_distributions(simic,
                        labels = c(0,2,3),
-                       tf_names = simic@tf_ids[1:6],
+                       tf_names = top_tfs[1:6],
                        fill = TRUE,
                        alpha = 0.9,
                        bw_adjust = 0.8,
@@ -246,7 +303,7 @@ plot_auc_distributions(simic,
 # Plot top 6 TFs density distributions
 plot_auc_distributions(simic,
                        labels = c(0,2,3),
-                       tf_names = simic@tf_ids[1:6],
+                       tf_names = top_tfs[1:6],
                        fill = TRUE,
                        alpha = 0.9,
                        bw_adjust = 0.8,
@@ -258,11 +315,10 @@ plot_auc_distributions(simic,
 # Plot top 4 TFs density distributions
 plot_auc_distributions(simic,
                        labels = c(0,3),
-                       tf_names = simic@tf_ids[1:2],
+                       tf_names = top_tfs[1:2],
                        fill = FALSE,
-                       alpha = 0.9,
                        bw_adjust = 0.5,
-                       rug = TRUE,
+                       rug = FALSE,
                        out_dir = plot_dir,
                        filename="AUC_distributions_notfilled_multipage.pdf",
                        save = TRUE,
@@ -272,19 +328,18 @@ plot_auc_distributions(simic,
 # Plot top 4 TFs density distributions
 plot_auc_distributions(simic,
                        labels = c(0,3),
-                       tf_names = simic@tf_ids[1:2],
+                       tf_names = top_tfs[1:2],
                        fill = FALSE,
-                       alpha = 0.9,
                        bw_adjust = 0.5,
-                       rug = TRUE,
+                       rug = FALSE,
                        save = FALSE,
-                       grid = c(2, 2))
+                       grid = c(1, 2))
 
 ## ----message=FALSE, warning = FALSE-----------------------
 plot_auc_cumulative(simic,
-                    tf_names = simic@tf_ids[1:2],
-                    rug = FALSE,
-                    grid = c(2, 2),
+                    tf_names = c("Trps1","Zfp950"),
+                    rug = TRUE,
+                    grid = c(1,2),
                     save = TRUE, 
                     include_table = TRUE,
                     width = 12, height = NULL,
@@ -292,10 +347,44 @@ plot_auc_cumulative(simic,
 
 ## ----echo = FALSE, fig.height=8, fig.width=15-------------
 plot_auc_cumulative(simic,
-                    tf_names = simic@tf_ids[1:2],
-                    rug = FALSE,
+                    tf_names = c("Trps1","Zfp950"),
+                    rug = TRUE,
                     grid = c(1, 2),
                     save = FALSE)
+
+## ----collapse=TRUE, results='hold'------------------------
+# Build cell groups from metadata (e.g. Seurat clusters, cell types, etc.)
+cell_groups_df = read.csv(cell_labels_path, header = TRUE)
+celltype <- "Basal-like"
+basal_cells  <- cell_groups_df$Cell[cell_groups_df$final_annotation_functional == celltype]
+simic_basal <- simic
+simic_basal@auc$collected <- simic@auc$collected[basal_cells, ]
+simic_basal
+
+simic_prolif <- simic
+celltype <- "Proliferating cells"
+prolif_cells  <- cell_groups_df$Cell[cell_groups_df$final_annotation_functional ==  celltype]
+simic_prolif@auc$collected <- simic@auc$collected[prolif_cells, ]
+simic_prolif
+
+## ----message=FALSE, fig.height=8, fig.width=15------------
+plot_auc_distributions(simic_prolif,
+                       tf_names = c("Trps1","Zfp950"),
+                       labels = c(0,3),
+                       rug = TRUE,
+                       alpha = 0.6,
+                       bw_adjust = 1/8,
+                       save = FALSE,
+                       grid = c(1, 2))
+# Plot density distributions for the basal-like cells
+plot_auc_distributions(simic_basal,
+                       tf_names = c("Trps1","Zfp950"),
+                       labels = c(0,3),
+                       rug = TRUE,
+                       alpha = 0.6,
+                       bw_adjust = 1/8,
+                       save = FALSE,
+                       grid = c(1, 2))
 
 ## ----eval = FALSE-----------------------------------------
 #  auc_file <- system.file("extdata", file.path("outputSimic/matrices/example1"

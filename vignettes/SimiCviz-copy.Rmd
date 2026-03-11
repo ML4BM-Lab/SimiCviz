@@ -98,7 +98,7 @@ cell_labels_new = load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
 head(cell_labels_new)
 ```
 
-If you have an SimiC run with the old pipeline you will have to load the activity scores matrices in pickle file and provide the `cell_labels`(phenotype) to the `SimiCvizExperiment` object to use the plotting functionalities. In this case simic will extract the cell Ids from teh auc matrices and match tehm in order ot the label pehnotype.
+If you have an SimiC run with the old pipeline you will have to load the activity scores matrices in pickle file and provide the `cell_labels`(phenotype) to the `SimiCvizExperiment` object to use the plotting functionalities. In this case SimiCviz will extract the cell IDs from the auc matrices and match them in order to the label phenotype
 ```{r}
 auc_file <- system.file("extdata", file.path("outputSimic/matrices/example1"
                         ,"example1_L1_0.01_L2_0.001_wAUC_matrices_filtered_BIC.pickle"), 
@@ -118,7 +118,9 @@ head(cell_labels_old)
 
 With these `SimiCPipeline` output we can generate the `SimiCvizExperiment` object easily.
 ```{r}
-cell_labels_path <- system.file("extdata",file.path("inputFiles","treatment_annotation.csv"), package = "SimiCviz")
+cell_labels_path <- system.file("extdata",
+                                file.path("inputFiles","treatment_annotation.csv"),
+                                package = "SimiCviz")
 ```
 
 
@@ -198,15 +200,18 @@ dir.create(plot_dir,recursive = TRUE)
 ## Weight R2 assessment
 To assess the goodness of the fitted model of TF-target edges we can plot the distribution adjusted R2 values across all targets.
 ```{r }
-# load_SimiCPipeline()` function will already load the `adjusted_r_squared` values in the meta slot.
+# load_SimiCPipeline()` function will already load the `adjusted_r_squared` 
+# values in the meta slot.
 adjusted_r_squared <- simic@meta$adjusted_r_squared
-plot_r2_distribution(adjusted_r_squared, simic, grid=c(2,2), width= 16,save =TRUE, out_dir = plot_dir)
+plot_r2_distribution(adjusted_r_squared, simic, grid=c(2,2), 
+                     width= 16, save =TRUE, out_dir = plot_dir)
 ```
 ```{r eval = FALSE}
 # For manual loading you can extract the adjusted R2 values from the weights pickle file.
 out <- read_pickle(weights_file)
 adjusted_r_squared <- out$adjusted_r_squared
-plot_r2_distribution(adjusted_r_squared, simic2_bis, grid=c(2,2), width= 16,save =TRUE, out_dir = plot_dir)
+plot_r2_distribution(adjusted_r_squared, simic2_bis, grid=c(2,2),
+                     width= 16,save =TRUE, out_dir = plot_dir)
 ```
 ```{r, fig.height=8, fig.width=10,echo =FALSE, message = FALSE}
 plot_r2_distribution(adjusted_r_squared, simic, grid=c(2,2))
@@ -216,7 +221,7 @@ Here we can see that the distribution of adjusted R2 values across all targets. 
 However, there are also some targets with low or negative adjusted R2 values, suggesting that the model does not fit well for those targets. This could be due to various reasons such as noise in the data, missing regulatory interactions, or complex regulatory mechanisms that are not captured by the model.
 For these targets with low adjusted R2, we suggest to filter them out before plotting.
 We select a threshold of `0.7` as it was the same used to calculate the activity scores during the SimiC pipeline. 
-You can change this threshold as needed, but you shoudl re-run the SimiCPipeline auc calculation with the same threshold to be consistent.
+You can change this threshold as needed, but you should re-run the SimiCPipeline auc calculation with the same threshold to be consistent.
 ```{r}
 unselected_targets <- list()
 selected_targets <- list()
@@ -312,7 +317,7 @@ histogram-based MinMax divergence.
 Higher scores indicate greater regulatory dissimilarity between conditions — i.e., TFs whose activity differs most across phenotypes.
 
 ## Global dissimilarity scores
-```{r}
+```{r collapse=TRUE, results='hold'}
 dis_score <- calculate_dissimilarity(simic)
 top_tfs <- rownames(dis_score)
 ```
@@ -338,12 +343,14 @@ We can subset the `SimiCvizExperiment` object by the desired labels and then cal
 ```{r}
 # Build cell groups from metadata (e.g. Seurat clusters, cell types, etc.)
 cell_groups_df = read.csv(cell_labels_path)
-cell_groups  <- lapply(unique(cell_groups_df$final_annotation_functional), function(celltype) {
+cell_groups  <- lapply(unique(cell_groups_df$final_annotation_functional), 
+                       function(celltype) {
   cell_groups_df$Cell[cell_groups_df$final_annotation_functional == celltype]
 })
 names(cell_groups) <- unique(cell_groups_df$final_annotation_functional)
 
-dissim_grouped <- calculate_dissimilarity(simic, labels = c(0,2), cell_groups = cell_groups)
+dissim_grouped <- calculate_dissimilarity(simic, labels = c(0,2), 
+                                          cell_groups = cell_groups)
 
 plot_dissimilarity_heatmap(simic,
                             cell_groups = cell_groups, 
@@ -481,7 +488,7 @@ plot_auc_cumulative(simic,
 # Trick
 
 If you want to plot the density and cumulative distributions separatedly for different cell groups (e.g. cell types, clusters, etc.) you can subset the `SimiCvizExperiment` object by the desired cells. Here is how to do it:
-```{r collapse=TRUE, results='hold'}
+```{r }
 # Build cell groups from metadata (e.g. Seurat clusters, cell types, etc.)
 cell_groups_df = read.csv(cell_labels_path, header = TRUE)
 celltype <- "Basal-like"
@@ -498,7 +505,7 @@ simic_prolif
 ```
 
 
-```{r message=FALSE, fig.height=8, fig.width=15}	
+```{r message=FALSE, fig.height=8, fig.width=15, collapse=TRUE, results='hold'}	
 plot_auc_distributions(simic_prolif,
                        tf_names = c("Trps1","Zfp950"),
                        labels = c(0,3),
