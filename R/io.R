@@ -13,7 +13,7 @@ read_pickle <- function(file) {
      stop("Expected a pickle file with extension .pickle or .pkl: ")
   }
   if (!file.exists(file)) {
-    stop(sprintf("File % does not exist.", file))
+    stop(sprintf("File %s does not exist.", file))
   }
   .ensure_python()
   pickle <- reticulate::import("pickle")
@@ -136,11 +136,10 @@ read_auc_csv <- function(file, ...) {
 
 #' Convert a long-format weights data.frame to a list of TF × target matrices
 #'
-#' Used internally by \code{\link{load_SimiCviz_from_csv}} to transform
+#' Used internally by \link{load_from_csv} to transform
 #' a data.frame with columns \code{tf}, \code{target}, \code{weight}
 #' (and optionally \code{label}) into the named-list-of-matrices format
 #' expected by \code{\link{SimiCvizExperiment}}.
-#'
 #' @param df A data.frame with at least columns \code{tf}, \code{target},
 #'   \code{weight}. If a \code{label} column is present, one matrix is
 #'   created per unique label; otherwise a single-element list is returned.
@@ -148,7 +147,15 @@ read_auc_csv <- function(file, ...) {
 #' @keywords internal
 #' 
 .convert_weights_df_to_list <- function(df) {
-
+  # Check required columns in  remove extra columns
+  extra_df <- NULL
+  # Check required columns in each subset and remove extra columns
+    required <- c("tf", "target", "weight", "label")
+    extra <- setdiff(tolower(colnames(df)), required)
+    missing <- setdiff(required, tolower(colnames(df)))
+    extra_df <- df
+  
+  df <- df[, required, drop = FALSE]
   # Split by label if present
   split_df <- if ("label" %in% tolower(colnames(df))) {
     split(df[, setdiff(names(df), "label")], df$label)
@@ -157,13 +164,12 @@ read_auc_csv <- function(file, ...) {
   }
 
   result <- lapply(split_df, function(sub) {
-
     # Check duplicates within subset
     if (any(duplicated(sub[c("tf", "target")]))) {
       stop("Duplicate tf-target pairs found in weights data.frame.
            Please ensure each tf-target pair has a unique weight value.")
     }
-
+    
     sub %>%
       tidyr::pivot_wider(
         names_from = target,
@@ -172,11 +178,48 @@ read_auc_csv <- function(file, ...) {
       ) %>%
       tibble::column_to_rownames("tf") %>%
       as.data.frame()
-  })
+    }
+  )
+  if (!is.null(extra_df)) {
 
-  result
+    extra_split_df <- if ("label" %in% tolower(colnames(extra_df))) {
+        split(extra_df[, setdiff(names(extra_df), "label")], extra_df$label)
+      } else {
+        list(`0` = extra_df)
+      }
+    results_extra <- list()
+    for (variable in extra) {
+      results_extra[[variable]] <- lapply(extra_split_df, function(sub) {
+        # Generate a list of lists with extra columns for each label
+        extra_cols <- sub[, variable, drop = TRUE]
+      })
+    }
+  return(list(weights = result, extra = results_extra))
+  } else {
+  return(list(weights = result))  
+}
 }
 
+#' Convert a list-format weights of tf x target weights 
+#' to a long-format data.frame
+#' @param weights_list A named list of data.frames (TFs in rows, targets in columns).
+#' Each data.frame corresponds to a label/phenotype and should have rownames as TFs and colnames as targets.
+#' @return A data.frame with columns: tf, target, weight, and label (if multiple matrices in the list).
+#' @keywords internal
+#' 
+
+.convert_weights_list_to_df <- function(weights_list) {
+  df_list <- lapply(names(weights_list), function(label) {
+    mat <- weights_list[[label]]
+    df <- as.data.frame(mat)
+    df$tf <- rownames(df)
+    df_long <- tidyr::pivot_longer(df, cols = -tf, names_to = "target", values_to = "weight")
+    df_long$label <- label
+    df_long
+    
+  })
+  as.data.frame(do.call(rbind, df_list))
+}
 # ---- AUC I/O pipeline ---------------------------------------------------
 
 #' Collect per-label AUC matrices using cell labels
@@ -187,7 +230,7 @@ read_auc_csv <- function(file, ...) {
 #'
 #' @param auc_list Named list of AUC matrices (cells × TFs). Names should
 #'   correspond to label identifiers (e.g. "0", "1").
-#' @param cell_labels A data.frame with columns \code{cell} and \code{label},
+#' @param cell_labels_df A data.frame with columns \code{cell} and \code{label},
 #'   as returned by \code{\link{load_cell_labels}}.
 #' @return A data.frame with cells in rows and TFs in columns, containing the activity scores for the specific labels.
 #' @export
@@ -286,8 +329,61 @@ auc_list_to_df <- function(auc_list, cell_labels_df) {
       values_fill = list(score = NA)
     ) %>%
     tibble::column_to_rownames("cell") %>%
-    as.data.frame()
+    as.data.frame() %>% dplyr::select(-label) # Remove label column if present
   return(auc_wide)
+}
+
+# ---- Expression matrix I/O -----------------------------------------------
+#' Load expression matrix from various sources /file formats
+#' Allowed formats:
+#' - CSV file
+#' - h5ad file
+#' - rds file (Seurat or SingleCellExperiment object)
+#' - matrix or data.frame in R
+#'
+#' @param expression file path, matrix, or data.frame
+#'
+#' @return expression matrix
+#' @export
+load_expression_matrix <- function(expression) {
+  if (is.character(expression)) {
+    # File path
+    if (!file.exists(expression)) {
+      stop(sprintf("Expression file not found: %s", expression))
+    }
+    
+    if (endsWith(expression, ".pickle")) {
+      expr_mat <- read_pickle(expression)
+      expr_mat <- as.matrix(expr_mat)
+    } else if (endsWith(expression, ".csv")) {
+      expr_mat <- read.csv(expression, header = TRUE, row.names = 1, check.names = FALSE)
+      expr_mat <- as.matrix(expr_mat)
+    } else if (endsWith(expression, ".h5ad")) {
+      .ensure_python()
+      anndata <- reticulate::import("anndata")
+      adata <- anndata$read_h5ad(expression)
+      expr_mat <- (as.matrix(adata$X))
+      colnames(expr_mat) <- adata$var_names$to_list()
+      rownames(expr_mat) <- adata$obs_names$to_list()
+    } else if (endsWith(expression, ".rds")) {
+      # Assume is Seurat or SingleCellExperiment object and extract expression matrix
+      rds_obj <- readRDS(expression)
+      if (inherits(rds_obj, "Seurat")) {
+        expr_mat <- as.matrix(rds_obj@assays$RNA$data)
+      } else if (inherits(rds_obj, "SingleCellExperiment")) {
+        expr_mat <- as.matrix(SummarizedExperiment::assay(rds_obj))
+      }
+      } else {
+      stop("Unsupported file format. Use .pickle, .csv, .h5ad, Seurat or SingleCellExperiment RDS.")
+    }
+  } else if (is.matrix(expression) || is.data.frame(expression) || inherits(expression_mat, "dgCMatrix")) {
+    expr_mat <- as.matrix(expression)
+  } else {
+    stop("expression must be a file path or matrix/data.frame")
+  }
+  message("Converting expression matrix to sparse format...")
+  sparse_mat <- as(expr_mat, "sparseMatrix")
+  sparse_mat
 }
 # ---- Main pipeline loader -----------------------------------------------
 
@@ -477,7 +573,7 @@ load_from_csv <- function(weights_file,
   } else {
     auc  <- NULL
   }
-  if (!is.null(auc)) {
+  if (!is.null(cell_labels_file)) {
     cell_labels <- load_cell_labels(cell_labels_file, header = TRUE, sep = ",")
   }
  

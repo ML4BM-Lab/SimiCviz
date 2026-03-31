@@ -1,4 +1,4 @@
-#' SimiCviz: Visualization Tools for SimiC Regulatory Network Outputs
+#' SimiCviz: Visualization and Activity Score analysis of Gene Regulatory Networks
 #'
 #' SimiCviz provides utilities to:
 #' \itemize{
@@ -17,7 +17,10 @@
 #'
 #' @docType package
 #' @name SimiCviz
+#' @keywords internal 
+"_PACKAGE"
 NULL
+
 
 # --- S4 class definition -------------------------------------------------
 
@@ -66,7 +69,7 @@ setClass(
 )
 
 # --- show method ----------------------------------------------------------
-
+#' @param object A \code{\linkS4class{SimiCvizExperiment}} object.
 #' @rdname SimiCvizExperiment-class
 #' @export
 setMethod("show", "SimiCvizExperiment", function(object) {
@@ -173,6 +176,7 @@ load_cell_labels <- function(x, ...) {
   if (is.data.frame(x)) {
     df <- .parse_cell_labels_df(x)
   } else if (is.character(x) && length(x) == 1L && file.exists(x)) {
+
     df <- .parse_cell_labels_file(x, ...)
   } else if (is.vector(x) && !is.list(x)) {
     df <- .parse_cell_labels_vector(x)
@@ -184,24 +188,33 @@ load_cell_labels <- function(x, ...) {
   }
   df$label <- as.integer(df$label)
   df$cell  <- as.character(df$cell)
-  df
+  return(df)
 }
 
 # --- internal parsers -----------------------------------------------------
 
 .parse_cell_labels_df <- function(df) {
-  if (ncol(df) > 2L){
+  cols_lower <- tolower(colnames(df))
+  
+  # Check for required columns
+  if (!all(c("cell", "label") %in% cols_lower)) {
+    if (ncol(df) == 1L) {
+      stop("Check cell labels input format!")
+    } else {
+      stop("Missing required columns: 'cell' and/or 'label'")
+    }
+  }
+  
+  # Inform about extra columns (but keep them)
+  if (ncol(df) > 2L) {
     message("Cell labels file contains extra columns")
     message(paste(colnames(df), collapse = " / "))
   }
-  if (all(c("cell", "label") %in% tolower(colnames(df)))) {
-    idx_cols <- which( tolower(colnames(df))%in% c("cell", "label"))
-    df <- df[, idx_cols, drop = FALSE]
-    colnames(df) <- c("cell", "label")
-    return(df)
-  } else if (ncol(df) == 1L){
-    stop("Check cell labels input format!")
-  }
+  # Rename only the required columns to lowercase
+  colnames(df)[cols_lower == "cell"] <- "cell"
+  colnames(df)[cols_lower == "label"] <- "label"
+  
+  return(df)
 }
 
 .parse_cell_labels_file <- function(path, ...) {
@@ -213,7 +226,8 @@ load_cell_labels <- function(x, ...) {
     utils::read.table(path, stringsAsFactors = FALSE, ...),
     error = function(e) utils::read.table(path, stringsAsFactors = FALSE, ...)
   )
-  .parse_cell_labels_df(df)
+  df <- .parse_cell_labels_df(df)
+  return(df)
 }
 
 .parse_cell_labels_vector <- function(x) {
@@ -243,8 +257,6 @@ load_cell_labels <- function(x, ...) {
 #' @param cell_labels optional data.frame or vector with cell-to-label mapping. 
 #'   \strong{If a plain vector is provided} (no cell ids), it must be in the same
 #'   row order as the AUC matrix.
-#' @param tf_ids character vector of TF identifiers.
-#' @param target_ids character vector of target gene identifiers.
 #' @param label_names optional named character vector mapping labels to display
 #'   names. Length must match the number of unique labels in \code{cell_labels}
 #'   (if provided) or \code{weights}.
@@ -265,13 +277,19 @@ SimiCvizExperiment <- function(weights = NULL,
   if (is.null(weights)) {
     message("`weights` is required to construct a SimiCvizExperiment.")
     stop("Please provide a valid `weights` list or data.frame.")
-  } else if (!class(weights) %in% c("data.frame" ,"list")) {
+  } else if (!inherits(weights,"data.frame") && !inherits(weights ,"list")) {
     stop("`weights` must be a dataframe or a list with one element per label.")
   }else{
+    extra_col_weights <- NULL
     weights_input <- weights
     if (is.data.frame(weights_input)) {
-      weights <- .convert_weights_df_to_list(weights_input)
+      result <- .convert_weights_df_to_list(weights_input)
+      weights <- result$weights
       message("`weights` provided as a data.frame, converting to list format.")
+      if ("extra" %in% names(result)) {
+        extra_col_weights <- result$extra
+        meta  <-  extra_col_weights
+      }
     } else {
       message("`weights` provided as a list.")
       weights <- weights_input
@@ -282,32 +300,38 @@ SimiCvizExperiment <- function(weights = NULL,
                              stringsAsFactors = FALSE)
   n_labels_w  <- length(weights)
   n_labels_cl <- 0L
+  
+  # --- cell_labels (process regardless of auc) ---
+  if (!is.null(cell_labels)) {
+    if (any(is.vector(cell_labels), is.data.frame(cell_labels))) {
+      cl_df <- load_cell_labels(cell_labels)
+      n_labels_cl <- length(unique(cl_df$label))
+    } else {
+      stop("`cell_labels` must be a data.frame or a vector.")
+    }
+  }
+  
   # --- auc ---
   if (is.null(auc)) {
     auc <- list()
-    message("No `auc` provided; AUC-related visualizations will be unavailable.")
-  } else if (!class(auc) %in% c("data.frame" ,"list")) {
+    if (nrow(cl_df) == 0) {
+      message("No `auc` or `cell_labels` provided; AUC-related visualizations will be unavailable.")
+    }
+  } else if (!inherits(auc,"data.frame")  && !inherits(auc, "list")) {
     stop("`auc` must be a dataframe or a list with one element per label.")
   } else {
     # IF AUC is valid class, THEN CELL LABELS MUST BE PROVIDED
     flag <- FALSE
 
-    # --- cell_labels ---
-    if (is.null(cell_labels)) {
+    # --- cell_labels (already loaded above, just validate) ---
+    if (nrow(cl_df) == 0) {
       message("`cell_labels` are required if auc is provided to construct a SimiCvizExperiment.")
       stop("Please provide a valid `cell_labels` data.frame or label vector.")
-    } else if (any(is.vector(cell_labels), is.data.frame(cell_labels))){
-
-      cl_df <- load_cell_labels(cell_labels)
-      n_labels_cl <- length(unique(cl_df$label))
-
-      if (is.vector(cell_labels) && identical(cl_df$cell, paste0("cell_", seq_along(cell_labels)))){
-        # Mark flag TRUE if cell_labels was a vector, then cell is cell_1, cell_2, to change afterwards with rownames in auc
-        flag <- is.vector(cell_labels) 
-        }
-        
-    } else{
-      stop("`cell_labels` must be a data.frame or a vector.")
+    }
+    
+    # Check if cell_labels was provided as vector
+    if (is.vector(cell_labels) && identical(cl_df$cell, paste0("cell_", seq_along(cell_labels)))) {
+      flag <- is.vector(cell_labels)
     }
 
     auc_input <- auc
@@ -328,7 +352,7 @@ SimiCvizExperiment <- function(weights = NULL,
         message("`cell_labels` were provided as a vector without cell IDs; assuming order matches AUC rows.")
         cl_df$cell <- rownames(auc_tmp) # assign cell IDs from AUC rownames
       }
-    } else if (all(class(auc_input) == "list" & identical(names(auc), names(weights)))) {
+    } else if (all(inherits(auc_input,"list") & identical(names(auc), names(weights)))) {
       # Assume it's a per-label list of AUC data.frames (not yet in wide format / collected)
       message("AUC in per-label list format, converting to wide format using cell_labels (collected).")
       if (flag){
@@ -381,7 +405,7 @@ SimiCvizExperiment <- function(weights = NULL,
   
   norm_lab <- .normalize_label_names(label_names, n_labels = n_labels, keys = names(weights))
   norm_col <- .normalize_label_colors(colors, n_labels = n_labels, keys = names(weights))
-
+  # --- construct object ---
   new(
     "SimiCvizExperiment",
     weights     = weights,
@@ -395,6 +419,12 @@ SimiCvizExperiment <- function(weights = NULL,
   )
 }
 
+#' Check if object is a SimiCvizExperiment
+#'
+#' Tests whether an object is of class SimiCvizExperiment.
+#'
+#' @param x An object to test.
+#' @return Logical, TRUE if x is a SimiCvizExperiment.
 #' @export
 is.SimiCvizExperiment <- function(x) {
   inherits(x, "SimiCvizExperiment")
@@ -406,7 +436,7 @@ is.SimiCvizExperiment <- function(x) {
   if (is.null(label_names) || length(label_names) == 0) {
     if (n_labels > 0L) {
       message("No `label_names` provided; using default 'Label i' naming.")
-      label_names <- paste("Label", seq_len(n_labels) - 1L,sep = "_")
+      label_names <- paste("Label", seq_len(n_labels) - 1L, sep = "_")
     }
   }
 
@@ -421,7 +451,7 @@ is.SimiCvizExperiment <- function(x) {
 
   if (is.null(names(label_names))) {
     names(labs) <- keys
-  } else{
+  } else {
     names(labs) <- names(label_names)
   }
 
@@ -429,7 +459,7 @@ is.SimiCvizExperiment <- function(x) {
   if (any(is.na(lab_ids))) {
     stop("`label_names` names must be coercible to integer labels (e.g. '0','1',...).")
   }
-  if (!all(lab_ids %in% keys)){
+  if (!all(lab_ids %in% keys)) {
     stop("`label_names` names must match the label identifiers used in `weights`.")
   }
 
