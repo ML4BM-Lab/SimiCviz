@@ -77,8 +77,15 @@
 #'
 #' Calculates the area under the empirical cumulative distribution function.
 #'
-#' @param ... Arguments passed to the function.
-#' @return A numeric value representing the ECDF AUC.
+#' @param x A \code{SimiCvizExperiment} object.
+#' @param tf_names Optional TF identifiers to evaluate. Defaults to all TFs in
+#'   collected AUC data.
+#' @param labels Optional labels to evaluate. Accepts label ids or label names.
+#' @param integration_range Numeric vector of length 2 defining lower and upper
+#'   bounds for integration.
+#' @param percentile Percentile used to compute the auxiliary AUC50/x_at_p50
+#'   metrics.
+#' @return A data.frame with one row per TF and per-label ECDF-derived metrics.
 #' @export
 calculate_ecdf_auc <- function(x, tf_names = NULL, labels = NULL,
                                integration_range = c(0, 1), percentile = 0.5) {
@@ -135,6 +142,22 @@ calculate_ecdf_auc <- function(x, tf_names = NULL, labels = NULL,
 
 # ---- Public: plot_auc_distributions --------------------------------------
 
+#' Plot AUC density distributions by label
+#'
+#' @param x A \code{SimiCvizExperiment} object.
+#' @param tf_names Optional TF identifiers to plot. Defaults to all available.
+#' @param labels Optional labels to include.
+#' @param fill Logical; if \code{TRUE}, draw filled densities.
+#' @param alpha Density transparency.
+#' @param bw_adjust Bandwidth adjustment passed to density estimation.
+#' @param rug Logical; draw rug marks.
+#' @param grid Integer vector \code{c(nrow, ncol)} for page layout. Use
+#'   \code{NULL} for a single auto-sized page.
+#' @param save Logical; save to PDF.
+#' @param filename Output filename when \code{save = TRUE}.
+#' @param out_dir Output directory when \code{save = TRUE}.
+#' @param width,height Output page dimensions.
+#' @return Invisibly, a list of ggplot objects.
 #' @export
 plot_auc_distributions <- function(x, tf_names = NULL, labels = NULL,
                                    fill = TRUE, alpha = 0.5, bw_adjust = 1,
@@ -256,6 +279,21 @@ plot_auc_distributions <- function(x, tf_names = NULL, labels = NULL,
 
 # ---- Public: plot_auc_cumulative -----------------------------------------
 
+#' Plot AUC cumulative (ECDF) curves by label
+#'
+#' @param x A \code{SimiCvizExperiment} object.
+#' @param tf_names Optional TF identifiers to plot. Defaults to all available.
+#' @param labels Optional labels to include.
+#' @param alpha Line transparency for ECDF curves.
+#' @param rug Logical; draw rug marks at the x-axis.
+#' @param grid Integer vector \code{c(nrow, ncol)} for page layout.
+#' @param percentile Percentile used in ECDF summary metrics.
+#' @param include_table Logical; add ECDF metrics table below each panel.
+#' @param save Logical; save to PDF.
+#' @param filename Output filename when \code{save = TRUE}.
+#' @param out_dir Output directory when \code{save = TRUE}.
+#' @param width,height Output page dimensions.
+#' @return Invisibly, a list of grobs/plots.
 #' @export
 plot_auc_cumulative <- function(x, tf_names = NULL, labels = NULL, alpha = 0.8,
                                 rug = FALSE, grid = c(4L, 2L), percentile = 0.5,
@@ -357,6 +395,16 @@ plot_auc_cumulative <- function(x, tf_names = NULL, labels = NULL, alpha = 0.8,
 
 # ---- Public: plot_auc_summary_statistics ---------------------------------
 
+#' Plot AUC summary statistics
+#'
+#' @param x A \code{SimiCvizExperiment} object.
+#' @param labels Optional labels to include.
+#' @param high_threshold Threshold used to count highly active TFs.
+#' @param save Logical; save to PDF.
+#' @param filename Output filename when \code{save = TRUE}.
+#' @param out_dir Output directory when \code{save = TRUE}.
+#' @param width,height Output page dimensions.
+#' @return Invisibly, a named list of plot objects.
 #' @export
 plot_auc_summary_statistics <- function(x, labels = NULL, high_threshold = 0.5,
                                         save = FALSE, filename = NULL,
@@ -466,6 +514,18 @@ plot_auc_summary_statistics <- function(x, labels = NULL, high_threshold = 0.5,
 
 # ---- Public: plot_auc_heatmap -------------------------------------------
 
+#' Plot mean AUC heatmap by TF and label
+#'
+#' @param x A \code{SimiCvizExperiment} object.
+#' @param tf_names Optional TF identifiers to plot. Defaults to all available.
+#' @param labels Optional labels to include.
+#' @param top_n Optional number of TFs to keep by dynamic range.
+#' @param cmap Colour map specification passed to internal palette helpers.
+#' @param save Logical; save to PDF.
+#' @param filename Output filename when \code{save = TRUE}.
+#' @param out_dir Output directory when \code{save = TRUE}.
+#' @param width,height Output page dimensions.
+#' @return Invisibly, the ggplot object.
 #' @export
 plot_auc_heatmap <- function(x, tf_names = NULL, labels = NULL, top_n = NULL,
                             cmap = "cividis",

@@ -376,7 +376,7 @@ load_expression_matrix <- function(expression) {
       } else {
       stop("Unsupported file format. Use .pickle, .csv, .h5ad, Seurat or SingleCellExperiment RDS.")
     }
-  } else if (is.matrix(expression) || is.data.frame(expression) || inherits(expression_mat, "dgCMatrix")) {
+  } else if (is.matrix(expression) || is.data.frame(expression) || inherits(expression, "dgCMatrix")) {
     expr_mat <- as.matrix(expression)
   } else {
     stop("expression must be a file path or matrix/data.frame")

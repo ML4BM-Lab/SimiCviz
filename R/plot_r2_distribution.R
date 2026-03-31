@@ -17,8 +17,8 @@
 #'   \code{names(adjusted_r_squared)}). Defaults to all.
 #' @param threshold Numeric R2 threshold line and summary-statistic cutoff
 #'   (default \code{0.7}).
-#' @param nrow,ncol Optional grid layout. If both \code{NULL}, one label per
-#'   row.
+#' @param grid Optional numeric vector of length 2: \code{c(nrow, ncol)}.
+#'   If \code{NULL}, one label per row is used.
 #' @param save logical; save to PDF (default \code{FALSE}).
 #' @param filename PDF filename (default \code{"R2_distributions.pdf"}).
 #' @param out_dir output directory (default \code{getwd()}).
@@ -147,7 +147,7 @@ plot_r2_distribution <- function(adjusted_r_squared,
   }
 
   if (save) {
-    fname <- filename %||% "R2_distributions.pdf"
+    fname <- if (is.null(filename)) "R2_distributions.pdf" else filename
     fpath <- file.path(out_dir, fname)
     dir.create(dirname(fpath), recursive = TRUE, showWarnings = FALSE)
     grDevices::pdf(fpath, width = width, height = height, onefile = TRUE)

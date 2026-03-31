@@ -318,6 +318,8 @@ plot_tf_weights <- function(x,
 #' @param x \code{SimiCvizExperiment}
 #' @param target_names character vector of targets to plot (default: all)
 #' @param labels integer or character vector of labels (default: all)
+#' @param top_n Optional integer. Currently accepted for API compatibility;
+#'   ignored in target mode.
 #' @param grid integer vector \code{c(nrow, ncol)} per page (default
 #'   \code{c(4, 1)}). Set \code{NULL} for a single page.
 #' @param save logical; save to PDF (default FALSE)

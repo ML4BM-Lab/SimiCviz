@@ -171,6 +171,8 @@ setMethod("show", "SimiCvizExperiment", function(object) {
 #'
 #' @return A \code{data.frame} with columns \code{cell} (character) and
 #'   \code{label} (integer), sorted by \code{cell}.
+#' @param ... Additional arguments passed to file readers when
+#'   \code{x} is a path.
 #' @export
 load_cell_labels <- function(x, ...) {
   if (is.data.frame(x)) {
@@ -370,7 +372,7 @@ SimiCvizExperiment <- function(weights = NULL,
           warning("Some auc cell IDs do not match those in cell_labels. Auc results will be displayed for matching cells only.")
         }
         # Convert to wide format using cell_labels to subset cells.
-        auc_tmp <- auc_list_to_df(auc_input, cell_labels = cl_df)
+        auc_tmp <- auc_list_to_df(auc_input, cell_labels_df = cl_df)
       }
     } else{
       auc_tmp <- NULL

@@ -13,7 +13,7 @@ Description:
     metrics) from pickle/CSV files, processing and generating publication-ready
     plots (networks, heatmaps, distributions) and tables saved into a reproducible, 
     ordered directory hierarchy.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: 
