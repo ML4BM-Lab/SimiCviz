@@ -122,7 +122,7 @@ calculate_ecdf_auc <- function(x, tf_names = NULL, labels = NULL,
     rows[[length(rows) + 1L]] <- row
   }
 
-  df <- do.call(rbind, lapply(rows, function(r) as.data.frame(r, stringsAsFactors = FALSE)))
+  df <- do.call(rbind, lapply(rows, function(r) as.data.frame(r, stringsAsFactors = FALSE,check.names = FALSE)))
   rownames(df) <- df$TF
   df$TF <- NULL
 
