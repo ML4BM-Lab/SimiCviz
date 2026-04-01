@@ -16,7 +16,7 @@ other GRN inference tools.
 Install from GitHub:
 ```r
 if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
-remotes::install_github("irenemaring/SimiCviz")
+remotes::install_github("ML4BM-Lab/SimiCviz")
 ```
 
 (When available on Bioconductor, installation instructions will be updated.)
