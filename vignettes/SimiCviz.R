@@ -94,7 +94,7 @@ adjusted_r_squared <- out$adjusted_r_squared
 
 viz_obj_simic <- SimiCvizExperiment(
   weights = simic_weights,
-  auc = NULL,  # Will compute this inthe next section later but can be loaded as well
+  auc = NULL,  # Will compute this in the next section later but can be loaded as well
   cell_labels = cell_labels,
   label_names = c("control","PD-L1","DAC","Combination"),
   colors = c("#e0e0e0", "#a8c8ff", "#ffb6b6", "#c1a9e0"),
@@ -159,10 +159,10 @@ head(auc_long)
 
 ## ----eval = F---------------------------------------------
 #  weights_df <- read.csv("path/to/your/weights.csv")
-#  weights_df_fitlered <- weights_df[weights_df$p_value < 0.01,]
+#  weights_df_filtered <- weights_df[weights_df$p_value < 0.01,]
 #  # From CSV files
 #  viz_obj <- SimiCvizExperiment(
-#    weights = weights_df_fitlered,
+#    weights = weights_df_filtered,
 #    auc = NULL,  # Will compute this inthe next section later but can be loaded as well
 #    cell_labels = cell_labels,
 #    label_names = c("control","PD-L1","DAC","Combination"),
@@ -378,7 +378,7 @@ plot_auc_distributions(simic,
                        save = FALSE,
                        grid = c(1,2))
 
-## ----fig.height=10, fig.width=10, echo=FALSE--------------
+## ----fig.height=10, fig.width=10--------------------------
 plot_auc_cumulative(
   simic,
   tf_names = top_tfs[1:4],
