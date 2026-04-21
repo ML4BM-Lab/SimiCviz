@@ -500,6 +500,7 @@ load_SimiCPipeline <- function(project_dir,
     } else {
       message("Found AUC pickle file: ", auc_pickle_file)
       auc <- read_auc_pickle(auc_pickle_file)
+      auc_collected <- NULL
     }
     }
 
