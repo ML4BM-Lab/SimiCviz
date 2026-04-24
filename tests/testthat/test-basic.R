@@ -9,5 +9,5 @@ test_that("SimiCvizExperiment constructor works", {
     cell = c("Cell1", "Cell2"),
     label = c(0, 1)
   )
-  expect_s4_class(SimiCvizExperiment(weights = w,cell_labels=cell_labels ), "SimiCvizExperiment")
+  expect_s4_class(SimiCviz::SimiCvizExperiment(weights = w, cell_labels = cell_labels), "SimiCvizExperiment")
 })
