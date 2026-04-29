@@ -42,6 +42,19 @@ NULL
 #' @slot label_names named character vector mapping integer labels to display names.
 #' @slot colors named character vector mapping integer labels to colors.
 #' @slot meta list with arbitrary metadata.
+#' @return An object of class \code{SimiCvizExperiment} with initialized slots.
+#' @examples
+#' #Create a SimiCvizExperiment from weights and AUC data
+#'   wt <- data.frame(tf     = c("TF1", "TF2"),
+#'                    target = c("Gene1", "Gene2"), 
+#'                    weight = c(0.5, 0.8),
+#'                    label  = c(0, 1)
+#'                    )
+#'  cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
+#'                           label = c(0, 1)
+#'                          )
+#'  simic <- SimiCvizExperiment(weights = wt, cell_labels = cell_labels)
+#'
 #' @export
 setClass(
   "SimiCvizExperiment",
@@ -267,6 +280,12 @@ load_cell_labels <- function(x, ...) {
 #' @param meta optional list of additional metadata.
 #'
 #' @return An object of class \code{"SimiCvizExperiment"}.
+#' @examples
+#' # Create a minimal SimiCvizExperiment with weights
+#'   weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, dimnames = list(paste0("TF", 1:3), paste0("Gene", 1:30)))),
+#'                      "1" = as.data.frame(matrix(rnorm(90), nrow = 3), dimnames = list(paste0("TF", 1:3), paste0("Gene", 1:30))))
+#'   simic <- SimiCvizExperiment(weights = weights_list)
+#'
 #' @export
 SimiCvizExperiment <- function(weights = NULL,
                                auc = NULL,
@@ -522,6 +541,10 @@ is.SimiCvizExperiment <- function(x) {
 #' @param colors optional named character vector mapping labels to colors.
 #'
 #' @return Modified \code{SimiCvizExperiment} object.
+#' @examples
+#' simic <- setLabelNames(simic, 
+#'                        label_names = c("control", "treated"),
+#'                        colors = c("#e0e0e0", "#a8c8ff"))
 #' @export
 setLabelNames <- function(x,
                           label_names,
@@ -552,6 +575,17 @@ setLabelNames <- function(x,
 #' @param cell_labels Any format accepted by \code{\link{load_cell_labels}}.
 #'
 #' @return Modified \code{SimiCvizExperiment} object.
+#' @examples 
+#'  wt <- data.frame(tf     = c("TF1", "TF2"),
+#'                    target = c("Gene1", "Gene2"), 
+#'                    weight = c(0.5, 0.8),
+#'                    label  = c(0, 1)
+#'                    )
+#'  cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
+#'                           label = c(0, 1)
+#'                          )
+#'  simic <- SimiCvizExperiment(weights = wt)
+#'  simic <- setCellLabels(simic, cell_labels)
 #' @export
 setCellLabels <- function(x, cell_labels) {
   if (!is.SimiCvizExperiment(x)) {

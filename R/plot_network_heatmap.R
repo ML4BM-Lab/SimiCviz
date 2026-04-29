@@ -13,11 +13,10 @@
 #' @return A data.frame with target genes as rows and one column per label
 #'   (named by \code{label_names}).
 #' @examples
-#' \dontrun{
-#'   # Example usage
+#'  # Example usage
 #'   network <- get_tf_network(simic, "Tead1", labels = c(1, 2), r2_threshold = 0.7)
 #'   print(network)
-#' }
+#'
 #' @export
 
 get_tf_network <- function(x, tf_name, labels = NULL, r2_threshold = NULL) {
@@ -104,8 +103,7 @@ get_tf_network <- function(x, tf_name, labels = NULL, r2_threshold = NULL) {
 #'   }
 #'
 #' @examples
-#' \dontrun{
-#'   # Basic usage
+#' # Basic usage
 #'   plot_tf_network_heatmap(simic, "Gata2")
 #'
 #'   # Custom palette and top targets
@@ -115,7 +113,7 @@ get_tf_network <- function(x, tf_name, labels = NULL, r2_threshold = NULL) {
 #'   # Only specific labels, no saving
 #'   plot_tf_network_heatmap(simic, "Runx2", labels = c(0, 3),
 #'                           save = FALSE)
-#' }
+#'
 #'
 #' @import ggplot2
 #' @export

@@ -23,7 +23,7 @@ The package is designed to be lightweight and focused on visualization,
 leaving modeling and inference to SimiCPipeline itself.
 }
 \author{
-\strong{Maintainer}: Irene Marín-Goñi \email{imarin.4@alumni.unav.es}
+\strong{Maintainer}: Irene Marin-Goni \email{imarin.4@alumni.unav.es} (\href{https://orcid.org/0000-0002-5060-0712}{ORCID})
 
 }
 \keyword{internal}

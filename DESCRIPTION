@@ -2,11 +2,12 @@ Package: SimiCviz
 Type: Package
 Title: Visualization Tools for Gene Regulatory Network Analysis
 Version: 0.99.0
-Authors@R: c(
-    person("Irene","Marin-Goni",
-    role = c( "aut","cre"),
-    email = "imarin.4@alumni.unav.es", 
-    comment = c(ORCID = "0000-0002-5060-0712")))
+Authors@R: 
+    person(given = "Irene",
+           family = "Marín-Goñi",
+           role = c("aut", "cre"),
+           email = "imarin.4@alumni.unav.es",
+           comment=c(ORCID="0000-0002-5060-0712"))
 Description: 
     Visualization and export utilities for SimiC and SimiCPipeline outputs.
     The package focuses on importing SimiC-style results (e.g., weights, AUC
@@ -15,8 +16,9 @@ Description:
     ordered directory hierarchy.
 License: MIT + file LICENSE
 Encoding: UTF-8
+LazyData: false
 Depends: 
-    R (>= 4.2)
+    R (>= 4.6)
 Imports:
     methods,
     stats,
@@ -41,6 +43,8 @@ Suggests:
     BiocStyle,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
-biocViews: Software, Visualization, GeneRegulation, Network
+URL: https://github.com/ML4BM-Lab/SimiCviz
+BugReports: https://github.com/ML4BM-Lab/SimiCviz/issues
+biocViews: Software, Visualization, GeneRegulation, NetworkInference, Network, SingleCell
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3

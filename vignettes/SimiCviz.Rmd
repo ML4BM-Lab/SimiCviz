@@ -250,7 +250,7 @@ Compute activity scores from TF-Target weights and expression matrix using `Simi
 # From SimiC input files
 # adj_r2_threshold: For SimiCPipeline style outputs it will look in metadata of viz_obj_simic, for "simic@meta$adjusted_r_squared" and filter out targets with lower R²)
 # n_cores: Number of workers if backend = 'multissession' or 
-#          Number of cores if 'multiprocess'
+#          Number of cores if backend  = 'multicore'
 
 viz_obj_simic <- calculate_activity_scores(
               viz_obj_simic,
@@ -260,7 +260,7 @@ viz_obj_simic <- calculate_activity_scores(
               select_top_k = NULL,  # Use all targets (or limit to top K)
               percent_of_target = 1.0,  
               n_cores = 2,
-              backend = "multisession",
+              backend = "multicore",
               verbose = TRUE
             )
 
@@ -500,7 +500,7 @@ plot_target_weights(
 ```
 
 ***Note:** If you want to plot all TFs and Targets leave the `tf_names` and target_names arguments respectively blank.*
-***Note:**: You can also save teh output and acces individual plots
+***Note:**: You can also save the output and acces individual plots
 
 ```{r include=FALSE}
 all_tfs_barplots <- plot_tf_weights(
@@ -525,14 +525,14 @@ all_tfs_barplots[[1]]
 ### Regulatory Network Heatmap
 You can extract a TF regulon with the function `get_tf_network` and plot it as a heatmap.
 ```{r}
-network <- get_tf_network(simic_full, "Tet2", r2_threshold = 0.7)
+network <- get_tf_network(simic, "Tet2", r2_threshold = 0.7)
 print(head(network))
 
-plot_tf_network_heatmap(simic_full, "Tet2", 
+plot_tf_network_heatmap(simic, "Tet2", 
                         save = FALSE, 
                         top_n = 15,
                         r2_threshold = 0.7,
-                        show_values = T, 
+                        show_values = TRUE, 
                         cmap = c("purple","white","yellow"))
 
 ```

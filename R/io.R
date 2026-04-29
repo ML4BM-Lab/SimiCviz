@@ -236,6 +236,14 @@ read_auc_csv <- function(file, ...) {
 #' @param cell_labels_df A data.frame with columns \code{cell} and \code{label},
 #'   as returned by \code{\link{load_cell_labels}}.
 #' @return A data.frame with cells in rows and TFs in columns, containing the activity scores for the specific labels.
+#' @examples
+#' # Example usage with per-label AUC matrices
+#'   auc_list <- list("0" = matrix(rnorm(100), nrow = 10, dimnames = list(paste0("cell_", 1:10), paste0("TF", 1:10))),
+#'                    "1" = matrix(rnorm(100), nrow = 10), dimnames = list(paste0("cell_", 1:10), paste0("TF", 1:10)))
+#'   cell_labels_df <- data.frame(cell = paste0("cell_", 1:10),
+#'                                label = c(rep(0, 5), rep(1, 5)))
+#'   collected_auc <- auc_list_to_df(auc_list, cell_labels_df)
+#'
 #' @export
 
 auc_list_to_df <- function(auc_list, cell_labels_df) {
@@ -316,7 +324,7 @@ auc_list_to_df <- function(auc_list, cell_labels_df) {
   result
 
   # Output collected format
-  auc_collected = dplyr::bind_rows(result)
+  auc_collected  <-  dplyr::bind_rows(result)
 
   return(auc_collected)
 }

@@ -34,6 +34,21 @@ setGeneric("get_auc", function(object, ...) standardGeneric("get_auc"))
 #' @slot tf_ids character vector of TF gene IDs
 #' @slot auc_results matrix to store computed activity scores (cells x TFs)
 #' @slot parallel_params list with parallelization settings
+#' @return An object of class \code{AUCProcessor} with slots for weights, expression, and computed AUC scores.
+#' @examples
+#' # Initialize an AUCProcessor object
+#'   wt <- data.frame(tf     = c("TF1", "TF2"),
+#'                    target = c("Gene1", "Gene2"), 
+#'                    weight = c(0.5, 0.8),
+#'                    label  = c(0, 1)
+#'                   )
+#'  cell_labels <- data.frame( cell  = c("Cell1", "Cell2"),
+#'                             label = c(0, 1)
+#'                           )
+#'  expr <- matrix( c(6,2,1,3,1,1), nrow = 3, byrow = TRUE, dimnames = list(c("Gene1", "Gene2", "TF1"), c("Cell1", "Cell2")))
+#'  processor <- AUCProcessor(weights     = wt,
+#'                            expression  = expr,
+#'                            cell_labels = cell_labels)
 #'
 #' @export
 setClass(
@@ -70,8 +85,8 @@ setClass(
 #' @param adj_r2_list (optional) A list of R2 values per label per target. Only used if weights are provided in list format and qc_type is "adj_r2". 
 #' @param n_cores number of cores for parallelization (default: 1)
 #' @param backend parallelization backend ("sequential", "multicore", "multisession")
-#'
-#' @return AUCProcessor object
+#' @return A \code{\linkS4class{AUCProcessor}} object with initialized slots.
+#' 
 #' @export
 AUCProcessor <- function(weights,
                         expression,
@@ -265,7 +280,6 @@ setMethod("show", "AUCProcessor", function(object) {
 #' @param select_top_k keep only top K targets per TF (NULL = use all)
 #' @param percent_of_target percentage of targets to use (0-1)
 #' @param verbose print progress messages
-#'
 #' @return A \code{\linkS4class{AUCProcessor}} object with computed scores
 #'   in the \code{auc_results} slot.
 #' @export
@@ -420,15 +434,11 @@ setMethod(
     idx_chunks <- split(all_idx, ceiling(seq_along(all_idx) / chunk_size))
 
     auc_chunks <- tryCatch(
-      {
-        suppressWarnings(
+      {       
           BiocParallel::bplapply(idx_chunks, function(idx) {
-            library(Matrix)
-            library(SimiCviz)
             rows <- lapply(idx, compute_one_cell)
             do.call(rbind, rows)
           }, BPPARAM = BPPARAM)
-        )
       },
       error = function(e) {
         warning(sprintf(
@@ -585,6 +595,12 @@ setMethod(
 #' @param weights list of weight matrices
 #' @param expression expression matrix (genes x cells)
 #' @param cell_labels cell-to-label mapping
+#' @return Invisibly returns TRUE if validation passes; raises error otherwise.
+#' @examples
+#' # This is an internal validation function
+#'   .validate_auc_processor_inputs(weights_df, expr_mat, cell_labels)
+#'
+#' @keywords internal
 .validate_auc_processor_inputs <- function(weights, expression, cell_labels) {
   # Check weights
   if (!is.data.frame(weights) || length(weights) == 0) {

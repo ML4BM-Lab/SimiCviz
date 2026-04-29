@@ -29,11 +29,10 @@
 #'   \code{data} (the dissimilarity data.frame).
 #'
 #' @examples
-#' \dontrun{
 #'   plot_dissimilarity_heatmap(simic, top_n = 20)
 #'   plot_dissimilarity_heatmap(simic, top_n = 15, cmap = "magma", save = FALSE)
 #'   plot_dissimilarity_heatmap(simic, cmap = c("white", "red", "darkred"))
-#' }
+#' 
 #' @import ggplot2
 #' @rdname plot_dissimilarity_heatmap
 #' @export
