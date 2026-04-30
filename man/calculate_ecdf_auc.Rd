@@ -32,3 +32,8 @@ A data.frame with one row per TF and per-label ECDF-derived metrics.
 \description{
 Calculates the area under the empirical cumulative distribution function.
 }
+\examples{
+simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+ecdf_metrics <- calculate_ecdf_auc(simic, tf_names = simic@tf_ids[1:2])
+head(ecdf_metrics)
+}

@@ -45,15 +45,14 @@ NULL
 #' @return An object of class \code{SimiCvizExperiment} with initialized slots.
 #' @examples
 #' #Create a SimiCvizExperiment from weights and AUC data
-#'   wt <- data.frame(tf     = c("TF1", "TF2"),
-#'                    target = c("Gene1", "Gene2"), 
-#'                    weight = c(0.5, 0.8),
-#'                    label  = c(0, 1)
-#'                    )
-#'  cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
-#'                           label = c(0, 1)
-#'                          )
-#'  simic <- SimiCvizExperiment(weights = wt, cell_labels = cell_labels)
+#' weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+#'                              dimnames = list(paste0("TF", 1:3), 
+#'                                              paste0("Gene", 1:30)))),
+#'                      "1" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+#'                              dimnames = list(paste0("TF", 1:3), 
+#'                                              paste0("Gene", 1:30)))))
+#' cell_labels <- data.frame(cell= c("Cell1", "Cell2"), label = c("0", "1"))
+#' simic <- SimiCvizExperiment(weights = wt, cell_labels = cell_labels)
 #'
 #' @export
 setClass(
@@ -186,6 +185,19 @@ setMethod("show", "SimiCvizExperiment", function(object) {
 #'   \code{label} (integer), sorted by \code{cell}.
 #' @param ... Additional arguments passed to file readers when
 #'   \code{x} is a path.
+#' @examples 
+#' cell_labels_path <- system.file("extdata", 
+#'                      file.path("inputFiles", "treatment_annotation.csv"), 
+#'                       package = "SimiCviz")
+#' cell_labels <- load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
+#' head(cell_labels)
+#'   #       cell category label
+#'   # 1 05_87_62__s5  control     0
+#'   # 2 02_84_27__s3  control     0
+#'   # 3 02_95_13__s5  control     0
+#'   # 4 06_61_12__s1  control     0
+#'   # 5 03_14_11__s5  control     0
+#'   # 6 05_46_81__s4  control     0
 #' @export
 load_cell_labels <- function(x, ...) {
   if (is.data.frame(x)) {
@@ -282,8 +294,12 @@ load_cell_labels <- function(x, ...) {
 #' @return An object of class \code{"SimiCvizExperiment"}.
 #' @examples
 #' # Create a minimal SimiCvizExperiment with weights
-#'   weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, dimnames = list(paste0("TF", 1:3), paste0("Gene", 1:30)))),
-#'                      "1" = as.data.frame(matrix(rnorm(90), nrow = 3), dimnames = list(paste0("TF", 1:3), paste0("Gene", 1:30))))
+#'   weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+#'                              dimnames = list(paste0("TF", 1:3), 
+#'                                              paste0("Gene", 1:30)))),
+#'                      "1" = as.data.frame(matrix(rnorm(90), nrow = 3), 
+#'                              dimnames = list(paste0("TF", 1:3), 
+#'                                              paste0("Gene", 1:30))))
 #'   simic <- SimiCvizExperiment(weights = weights_list)
 #'
 #' @export
@@ -446,6 +462,15 @@ SimiCvizExperiment <- function(weights = NULL,
 #'
 #' @param x An object to test.
 #' @return Logical, TRUE if x is a SimiCvizExperiment.
+#' @examples
+#'   weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3,
+#'                                            dimnames = list(paste0("TF", 1:3),
+#'                                                            paste0("Gene", 1:30)))),
+#'                      "1" = as.data.frame(matrix(rnorm(90), nrow = 3),
+#'                                          dimnames = list(paste0("TF", 1:3),
+#'                                                          paste0("Gene", 1:30))))
+#'   simic <- SimiCvizExperiment(weights = weights_list)
+#'   is.SimiCvizExperiment(simic) # should return TRUE
 #' @export
 is.SimiCvizExperiment <- function(x) {
   inherits(x, "SimiCvizExperiment")
@@ -542,6 +567,15 @@ is.SimiCvizExperiment <- function(x) {
 #'
 #' @return Modified \code{SimiCvizExperiment} object.
 #' @examples
+#' wt <- data.frame(tf     = c("TF1", "TF2"),
+#'                    target = c("Gene1", "Gene2"), 
+#'                    weight = c(0.5, 0.8),
+#'                    label  = c(0, 1)
+#'                    )
+#'  cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
+#'                           label = c(0, 1)
+#'                          )
+#' simic <- SimiCvizExperiment(weights = wt, cell_labels = cell_labels)
 #' simic <- setLabelNames(simic, 
 #'                        label_names = c("control", "treated"),
 #'                        colors = c("#e0e0e0", "#a8c8ff"))
@@ -581,10 +615,10 @@ setLabelNames <- function(x,
 #'                    weight = c(0.5, 0.8),
 #'                    label  = c(0, 1)
 #'                    )
-#'  cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
-#'                           label = c(0, 1)
-#'                          )
 #'  simic <- SimiCvizExperiment(weights = wt)
+#' 
+#'  cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
+#'                           label = c(0, 1))
 #'  simic <- setCellLabels(simic, cell_labels)
 #' @export
 setCellLabels <- function(x, cell_labels) {

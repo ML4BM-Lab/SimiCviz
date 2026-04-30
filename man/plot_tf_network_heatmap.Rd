@@ -68,17 +68,14 @@ Targets that fail the adjusted-R² filter are shown as grey cells labelled
 \code{SimiCVisualization.plot_tf_network_heatmap()} method.
 }
 \examples{
-\dontrun{
-  # Basic usage
-  plot_tf_network_heatmap(simic, "Gata2")
+  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+  plot_tf_network_heatmap(simic, "Pms1")
 
   # Custom palette and top targets
-  plot_tf_network_heatmap(simic, "Zfp950", top_n = 15,
-                          cmap = "RdBu_r", r2_threshold = 0.7)
+  plot_tf_network_heatmap(simic, "Ets1", top_n = 15,
+                          cmap = c("white", "red", "darkred"), r2_threshold = 0.7)
 
   # Only specific labels, no saving
-  plot_tf_network_heatmap(simic, "Runx2", labels = c(0, 3),
-                          save = FALSE)
-}
+  plot_tf_network_heatmap(simic, "Gli3", labels = c(0, 3), show_values = FALSE)
 
 }

@@ -7,7 +7,8 @@
   lab_int <- as.integer(label)
   lab_chr <- as.character(lab_int)
   if (nrow(x@cell_labels) == 0L)
-    stop(sprintf("No cell labels found in the experiment; cannot subset AUC for label '%s'.", lab_chr))
+    stop(sprintf("No cell labels found in the experiment; 
+                 cannot subset AUC for label '%s'.", lab_chr))
   auc_df <- tryCatch(x@auc$collected, error = function(e) NULL)
   if (!is.null(auc_df) && "label" %in% colnames(x@cell_labels)) {
     cell_idx <- x@cell_labels$cell[x@cell_labels$label == lab_int]
@@ -88,7 +89,7 @@
 #' @return A data.frame with one row per TF and per-label ECDF-derived metrics.
 #' @examples
 #' simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
-#' ecdf_metrics <- calculate_ecdf_auc(simic, tf_names = simic@tf_ids[1:2])
+#' ecdf_metrics <- calculate_ecdf_auc(simic, tf_names = c("Pms1","Ets1"))
 #' head(ecdf_metrics)
 #' @export
 calculate_ecdf_auc <- function(x, tf_names = NULL, labels = NULL,
@@ -166,7 +167,7 @@ calculate_ecdf_auc <- function(x, tf_names = NULL, labels = NULL,
 #' simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
 #' plot_auc_distributions(
 #'   simic,
-#'   tf_names  = simic@tf_ids[1:2],
+#'   tf_names  = c("Pms1","Ets1"),
 #'   fill      = TRUE,
 #'   alpha     = 0.6,
 #'   bw_adjust = 1/8,
@@ -313,7 +314,7 @@ plot_auc_distributions <- function(x, tf_names = NULL, labels = NULL,
 #' simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
 #' plot_auc_cumulative(
 #'   simic,
-#'   tf_names      = simic@tf_ids[1:2],
+#'   tf_names      = c("Pms1","Ets1"),
 #'   rug           = TRUE,
 #'   grid          = c(1L, 2L)
 #' )

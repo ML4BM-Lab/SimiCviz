@@ -17,3 +17,15 @@ Modified \code{SimiCvizExperiment} object.
 \description{
 Set or update cell-to-label mapping
 }
+\examples{
+ wt <- data.frame(tf     = c("TF1", "TF2"),
+                   target = c("Gene1", "Gene2"), 
+                   weight = c(0.5, 0.8),
+                   label  = c(0, 1)
+                   )
+ simic <- SimiCvizExperiment(weights = wt)
+
+ cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
+                          label = c(0, 1))
+ simic <- setCellLabels(simic, cell_labels)
+}

@@ -52,3 +52,15 @@ Invisibly, a list of ggplot objects.
 \description{
 Plot AUC density distributions by label
 }
+\examples{
+simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+plot_auc_distributions(
+  simic,
+  tf_names  = simic@tf_ids[1:2],
+  fill      = TRUE,
+  alpha     = 0.6,
+  bw_adjust = 1/8,
+  rug       = TRUE,
+  grid      = c(1L, 2L)
+)
+}

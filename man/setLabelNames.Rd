@@ -20,3 +20,17 @@ Modified \code{SimiCvizExperiment} object.
 Validates that the provided vectors match the number of labels
 in \code{cell_labels} (preferred) or \code{weights}.
 }
+\examples{
+wt <- data.frame(tf     = c("TF1", "TF2"),
+                   target = c("Gene1", "Gene2"), 
+                   weight = c(0.5, 0.8),
+                   label  = c(0, 1)
+                   )
+ cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
+                          label = c(0, 1)
+                         )
+simic <- SimiCvizExperiment(weights = wt, cell_labels = cell_labels)
+simic <- setLabelNames(simic, 
+                       label_names = c("control", "treated"),
+                       colors = c("#e0e0e0", "#a8c8ff"))
+}

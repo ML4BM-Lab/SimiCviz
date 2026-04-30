@@ -11,6 +11,9 @@
 \arguments{
 \item{object}{A \code{\linkS4class{SimiCvizExperiment}} object.}
 }
+\value{
+An object of class \code{SimiCvizExperiment} with initialized slots.
+}
 \description{
 Lightweight S4 container for SimiC visualization data.
 }
@@ -40,3 +43,16 @@ Required for label-specific AUC visualizations.}
 \item{\code{meta}}{list with arbitrary metadata.}
 }}
 
+\examples{
+#Create a SimiCvizExperiment from weights and AUC data
+  wt <- data.frame(tf     = c("TF1", "TF2"),
+                   target = c("Gene1", "Gene2"), 
+                   weight = c(0.5, 0.8),
+                   label  = c(0, 1)
+                   )
+ cell_labels <- data.frame(cell = c("Cell1", "Cell2"), 
+                          label = c(0, 1)
+                         )
+ simic <- SimiCvizExperiment(weights = wt, cell_labels = cell_labels)
+
+}

@@ -11,7 +11,7 @@ plot_dissimilarity_heatmap(
   dissim_df = NULL,
   cmap = NULL,
   show_values = TRUE,
-  save = TRUE,
+  save = FALSE,
   out_dir = getwd(),
   filename = NULL,
   width = NULL,
@@ -61,9 +61,9 @@ Displays a heatmap of TF regulatory dissimilarity scores, optionally
 broken down by cell group. Uses \pkg{ggplot2} tile geometry.
 }
 \examples{
-\dontrun{
+  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
   plot_dissimilarity_heatmap(simic, top_n = 20)
-  plot_dissimilarity_heatmap(simic, top_n = 15, cmap = "magma", save = FALSE)
-  plot_dissimilarity_heatmap(simic, cmap = c("white", "red", "darkred"))
-}
+  plot_dissimilarity_heatmap(simic, top_n = 5, cmap = "magma") 
+  plot_dissimilarity_heatmap(simic, cmap = c("white", "red", "darkred"), show_values = FALSE)
+
 }

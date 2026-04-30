@@ -3,16 +3,16 @@
 #' Plots histograms of adjusted R² values per label, similar to the Python
 #' \code{SimiCVisualization$plot_r2_distribution}.
 #'
-#' @param adjusted_r_squared A \strong{named list} of numeric vectors, one per
-#'   label.
-#'   Names must be label identifiers (e.g. \code{"0"}, \code{"1"}, …).
-#'   This metric is specific to SimiC's regression step; other methods may not
-#'   produce it, so it is kept as an explicit input rather than extracted from
-#'   the experiment object.
+#' @param adjusted_r_squared A \strong{named list} of numeric vectors,
+#'  one per label.
+#'  Names must be label identifiers (e.g. \code{"0"}, \code{"1"}, …).
+#'  This metric is specific to SimiC's regression step; other methods may not
+#'  produce it, so it is kept as an explicit input rather than extracted from
+#'  the experiment object.
 #' @param x Optional \code{SimiCvizExperiment} object used solely to resolve
 #'   display names and colors for labels.
-#'   If \code{NULL}, default \code{"Label i"} naming and a built-in palette are
-#'   used.
+#'   If \code{NULL}, default \code{"Label i"} naming and a built-in 
+#'   palette are used.
 #' @param labels Optional vector of labels to plot (subset of
 #'   \code{names(adjusted_r_squared)}). Defaults to all.
 #' @param threshold Numeric R² threshold line and summary-statistic cutoff
@@ -26,9 +26,12 @@
 #'
 #' @return Called for side effects (plots). Returns \code{invisible(NULL)}.
 #' @examples
-#'   simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
-#'   plot_r2_distribution(simic@meta$adjusted_r_squared, simic, grid = c(2, 2))
-#'   plot_r2_distribution(simic@meta$adjusted_r_squared, simic, threshold = 0.9, labels = c(0, 1))
+#'   simic <- readRDS(system.file("extdata", "simic_full.rds",
+#'                                 package = "SimiCviz"))
+#'   plot_r2_distribution(simic@meta$adjusted_r_squared, simic,
+#'                         grid = c(2, 2))
+#'   plot_r2_distribution(simic@meta$adjusted_r_squared, simic,
+#'                        threshold = 0.9, labels = c(0, 1))
 #' @export
 plot_r2_distribution <- function(adjusted_r_squared,
                                  x = NULL,
@@ -41,18 +44,23 @@ plot_r2_distribution <- function(adjusted_r_squared,
                                  width = 10,
                                  height = NULL) {
 
-  default_colors <- c("#5e82bd", "#ed9900", "#008b00", "#cd9b9b", "#800080", "#ff676f")
+  default_colors <- c("#5e82bd", "#ed9900", "#008b00", 
+                      "#cd9b9b", "#800080", "#ff676f")
 
   # --- validate adjusted_r_squared ---
-  if (missing(adjusted_r_squared) || is.null(adjusted_r_squared) || !is.list(adjusted_r_squared)) {
-    stop("`adjusted_r_squared` must be a named list of numeric vectors (one per label).")
+  if (missing(adjusted_r_squared) || 
+      is.null(adjusted_r_squared) || 
+      !is.list(adjusted_r_squared)) {
+    stop("`adjusted_r_squared` must be a named list of numeric 
+          vectors (one per label).")
   }
 
   obj <- adjusted_r_squared
 
   all_labels <- names(obj)
   if (is.null(all_labels) || any(all_labels == "")) {
-    stop("`adjusted_r_squared` must be a *named* list with label identifiers as names.")
+    stop("`adjusted_r_squared` must be a *named* list with label 
+             identifiers as names.")
   }
 
   # --- optional experiment object for display names / colors ---
@@ -83,8 +91,10 @@ plot_r2_distribution <- function(adjusted_r_squared,
   n_labels <- length(use_labels)
 
   # --- color and name maps from object (same approach as plot_auc.R) ---
-  lab_names_map <- if (!is.null(x) && length(x@label_names) > 0L) x@label_names else character()
-  col_map       <- if (!is.null(x) && length(x@colors)      > 0L) x@colors      else character()
+  lab_names_map <- if (!is.null(x) && 
+                  length(x@label_names) > 0L) x@label_names else character()
+  col_map       <- if (!is.null(x) && 
+                       length(x@colors)> 0L) x@colors else character()
 
   # --- grid layout ---
   if (is.null(grid)){
@@ -94,8 +104,10 @@ plot_r2_distribution <- function(adjusted_r_squared,
     stop("`grid` must be a numeric positive vector of length 2 (nrow, ncol).")
   } else{
     # take the min number between the provided grid and the number of labels
-    nrow <- ifelse(as.integer(grid[1]) == 0, n_labels, min(as.integer(grid[1]), n_labels)) 
-    ncol <- ifelse(as.integer(grid[2]) == 0, ceiling(n_labels / nrow), min(as.integer(grid[2]), ceiling(n_labels / nrow))) 
+    nrow <- ifelse(as.integer(grid[1]) == 0, n_labels, 
+                  min(as.integer(grid[1]), n_labels)) 
+    ncol <- ifelse(as.integer(grid[2]) == 0, ceiling(n_labels / nrow),
+                   min(as.integer(grid[2]), ceiling(n_labels / nrow))) 
   }
 
   if (is.null(height)) height <- 5 * nrow
@@ -111,12 +123,13 @@ plot_r2_distribution <- function(adjusted_r_squared,
       r2_vals    <- obj[[lab_name]]
 
       if (is.null(r2_vals) || !length(r2_vals)) {
-        plot.new(); title(main = paste("No R\u00B2 data for label", lab_name)); next
+        plot.new(); title(main = paste("No R\u00B2 data for label", 
+        lab_name)); next
       }
 
       sel        <- r2_vals > threshold
       n_selected <- sum(sel, na.rm = TRUE)
-      mean_r2    <- if (n_selected > 0) mean(r2_vals[sel], na.rm = TRUE) else 0
+      mean_r2   <- if (n_selected > 0) mean(r2_vals[sel], na.rm = TRUE) else 0
 
       lab_id_num <- tryCatch(as.integer(lab_name),
                              warning = function(.) NA_integer_,
@@ -135,7 +148,7 @@ plot_r2_distribution <- function(adjusted_r_squared,
       else
         default_colors[(i - 1L) %% length(default_colors) + 1L]
 
-      n_tfs <- if (!is.null(sim_obj)) max(100, length(sim_obj@tf_ids)) else 100L
+    n_tfs <- if (!is.null(sim_obj)) max(100, length(sim_obj@tf_ids)) else 100L
 
       main_title <- sprintf(
         "%s\nTargets selected: %d, Mean R\u00b2: %.3f",

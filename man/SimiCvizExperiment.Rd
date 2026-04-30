@@ -41,3 +41,14 @@ An object of class \code{"SimiCvizExperiment"}.
 \description{
 Construct a SimiCvizExperiment object
 }
+\examples{
+# Create a minimal SimiCvizExperiment with weights
+  weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+                             dimnames = list(paste0("TF", 1:3), 
+                                             paste0("Gene", 1:30)))),
+                     "1" = as.data.frame(matrix(rnorm(90), nrow = 3), 
+                             dimnames = list(paste0("TF", 1:3), 
+                                             paste0("Gene", 1:30))))
+  simic <- SimiCvizExperiment(weights = weights_list)
+
+}

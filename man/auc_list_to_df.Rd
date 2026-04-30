@@ -21,3 +21,16 @@ Given a list of AUC matrices (one per label) and a cell-labels data.frame,
 subsets each matrix to include only the cells belonging to that label and collects them into a single data.frame.
 This is a helper function to transform raw per-label AUC outputs into the "collected" format used by \code{SimiCvizExperiment@auc}.
 }
+\examples{
+# Example usage with per-label AUC matrices
+  auc_list <- list("0" = matrix(rnorm(100), nrow = 10, 
+                         dimnames = list(paste0("cell_", 1:10), 
+                                         paste0("TF", 1:10))),
+                   "1" = matrix(rnorm(100), nrow = 10), 
+                         dimnames = list(paste0("cell_", 1:10),
+                                         paste0("TF", 1:10)))
+  cell_labels_df <- data.frame(cell = paste0("cell_", 1:10),
+                               label = c(rep(0, 5), rep(1, 5)))
+  collected_auc <- auc_list_to_df(auc_list, cell_labels_df)
+
+}

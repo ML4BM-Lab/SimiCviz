@@ -71,6 +71,10 @@
 #' @return A \code{data.frame} with TFs as rows, sorted by score (descending).
 #'
 #' @rdname calculate_dissimilarity
+#' @examples 
+#' simic <- readRDS(system.file("extdata", "simic_full.rds", 
+#'          package = "SimiCviz"))
+#' dis_score <- calculate_dissimilarity(simic)
 #' @export
 calculate_dissimilarity <- function(x,
                                     labels = NULL,
@@ -123,7 +127,8 @@ calculate_dissimilarity <- function(x,
                                             as.character(labels), n_breaks)
     result <- data.frame(MinMax_score = scores, row.names = tf_cols,
                          stringsAsFactors = FALSE)
-    result <- result[order(result$MinMax_score, decreasing = TRUE), , drop = FALSE]
+    result <- result[order(result$MinMax_score, decreasing = TRUE), , 
+                     drop = FALSE]
     if (verbose) {
       message(sprintf("Top 10 TFs by MinMax dissimilarity:"))
       print(utils::head(result, 10))
@@ -138,22 +143,28 @@ calculate_dissimilarity <- function(x,
   }
   if (is.character(cell_groups) && cell_groups %in% colnames(cl)) {
     # Generate groups from cell_lables data.frame column
-    cell_groups_list  <- lapply(unique(cl[[cell_groups]]), function(celltype) {
+    cell_groups_list  <- lapply(unique(cl[[cell_groups]]), 
+                                function(celltype) {
                     cl$cell[cl[[cell_groups]] == celltype]
       })
       names(cell_groups_list) <- unique(cl[[cell_groups]])
   } else if (is.list(cell_groups)) {
     cell_groups_list <- cell_groups
   } else {
-    stop("cell_groups must be either a column name in cell_labels or a named list of cell ID vectors.")
+    stop("cell_groups must be either a column name in cell_labels or
+          a named list of cell ID vectors.")
   }
   group_scores <- list()
   for (gname in names(cell_groups_list)) {
     cell_ids <- cell_groups_list[[gname]]
     auc_list <- .build_auc_list(auc_df = auc_df, cell_subset = cell_ids)
-    if (verbose) message(sprintf("  Group: %s (%d cells)", gname, sum(sapply(auc_list, nrow))))
+    if (verbose) {
+      message(sprintf("  Group: %s (%d cells)", gname, 
+              sum(sapply(auc_list, nrow))))}
     if (length(auc_list) < 2L) {
-      if (verbose) message(sprintf("    Warning: <2 labels with cells for '%s', skipping.", gname))
+      if (verbose){
+        message(sprintf("    Warning: <2 labels with cells for '%s', skipping.", gname))
+      }
       group_scores[[gname]] <- rep(0, length(tf_cols))
     } else {
       group_scores[[gname]] <- .compute_dissimilarity_scores(

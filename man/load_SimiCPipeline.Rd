@@ -40,3 +40,12 @@ The canonical AUC format stored in \code{SimiCvizExperiment@auc} is always
 a single data.frame with cells in rows and TFs in columns (the "collected"
 format), compatible with any GRN method producing per-cell TF activity scores.
 }
+\examples{
+\dontrun{
+  simic_full <- load_SimiCPipeline(
+                project_dir = "path/to/simic_run",
+                run_name    = "example1",
+                lambda1     = "0.01",
+                lambda2     = "0.001")
+}
+}

@@ -11,6 +11,9 @@
 \arguments{
 \item{object}{A \code{\linkS4class{AUCProcessor}} object.}
 }
+\value{
+An object of class \code{AUCProcessor} with slots for weights, expression, and computed AUC scores.
+}
 \description{
 Efficient calculator for TF activity scores (AUC) based on GRN weights
 and cell-specific expression.
@@ -33,3 +36,21 @@ and cell-specific expression.
 \item{\code{parallel_params}}{list with parallelization settings}
 }}
 
+\examples{
+# Initialize an AUCProcessor object
+  wt <- data.frame(tf     = c("TF1", "TF2"),
+                   target = c("Gene1", "Gene2"), 
+                   weight = c(0.5, 0.8),
+                   label  = c(0, 1)
+                  )
+ cell_labels <- data.frame( cell  = c("Cell1", "Cell2"),
+                            label = c(0, 1)
+                          )
+ expr <- matrix( c(6,2,1,3,1,1), nrow = 3, byrow = TRUE,
+                 dimnames = list(c("Gene1", "Gene2", "TF1"),
+                 c("Cell1", "Cell2")))
+ processor <- AUCProcessor(weights     = wt,
+                           expression  = expr,
+                           cell_labels = cell_labels)
+
+}

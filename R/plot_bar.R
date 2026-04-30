@@ -6,7 +6,9 @@
 #' @return data.frame with columns: tf, target, weight, label, label_name
 #' @keywords internal
 .weights_to_long <- function(x) {
-  if (length(x@weights) == 0L) stop("No weight matrices found in the experiment.")
+  if (length(x@weights) == 0L){
+    stop("No weight matrices found in the experiment.")
+  }
   W_long_list <- list()
   for (lab in names(x@weights)) {
     W <- as.matrix(x@weights[[lab]])
@@ -29,7 +31,8 @@
 #' @param gene_type character; "tf" or "target"
 #' @param col_map named character vector of colours (keyed by label_name)
 #' @param top_n integer or NULL; keep only top N partners by mean abs weight
-#' @param allowed_genes character vector or NULL; restrict partner genes to this set
+#' @param allowed_genes character vector or NULL; 
+#'         restrict partner genes to this set
 #' @return ggplot object
 #' @keywords internal
 .make_weight_barplot <- function(df, gene_name, gene_type,
@@ -37,8 +40,12 @@
                                  allowed_genes = NULL) {
   if (!requireNamespace("ggplot2", quietly = TRUE)) stop("ggplot2 required")
 
-  x_label <- if (gene_type == "tf") "Target Genes" else "Transcription Factors"
-  title    <- if (gene_type == "tf") paste("TF:", gene_name) else paste("Target:", gene_name)
+  x_label <-if (gene_type == "tf") "Target Genes" else "Transcription Factors"
+  title <- if(gene_type == "tf"){
+                paste("TF:", gene_name)
+              } else {
+                paste("Target:", gene_name)
+                }
 
   if (nrow(df) == 0L) {
     return(
@@ -60,7 +67,8 @@
     for (lab in unique(df$label)) {
         lab_key <- as.character(lab)
         df_lab <- df[df$label == lab, , drop = FALSE]
-        df_lab <- df_lab[df_lab[[partner_col]] %in% allowed_genes[[lab_key]], , drop = FALSE]
+        df_lab <- df_lab[df_lab[[partner_col]] %in% 
+                        allowed_genes[[lab_key]], , drop = FALSE]
         df_lab_list[[lab_key]] <- df_lab
        }
     df <- dplyr::bind_rows(df_lab_list)
@@ -69,7 +77,8 @@
     return(
       ggplot2::ggplot() +
         ggplot2::annotate("text", x = 0.5, y = 0.5,
-                          label = paste("No weights after filtering\nfor", gene_name),
+                          label = paste("No weights after filtering\nfor",
+                                        gene_name),
                           size = 4, hjust = 0.5, vjust = 0.5) +
         ggplot2::theme_void() +
         ggplot2::ggtitle(title)
@@ -98,7 +107,8 @@
   full_grid <- expand.grid(gene = gene_order, label_name = all_label_names,
                            stringsAsFactors = FALSE)
   df_slim <- df[, c("gene", "label_name", "weight"), drop = FALSE]
-  df_plot <- merge(full_grid, df_slim, by = c("gene", "label_name"), all.x = TRUE)
+  df_plot <- merge(full_grid, df_slim, by = c("gene", "label_name"), 
+                   all.x = TRUE)
   df_plot$weight[is.na(df_plot$weight)] <- 0
 
   df_plot$gene       <- factor(df_plot$gene,       levels = gene_order)
@@ -113,7 +123,8 @@
   p <- ggplot2::ggplot(df_plot, ggplot2::aes(x = .data$gene,
                                               y = .data$weight,
                                               fill = .data$label_name)) +
-    ggplot2::geom_col(position = ggplot2::position_dodge(width = 0.8,preserve = "single"),
+    ggplot2::geom_col(position = ggplot2::position_dodge(width = 0.8, 
+                                                         preserve = "single"),
                       colour = "black", linewidth = 0.3, width = 0.8) +
     ggplot2::scale_fill_manual(values = col_map, drop = FALSE) +
     ggplot2::geom_hline(yintercept = 0, colour = "black", linewidth = 0.5) +
@@ -121,7 +132,7 @@
     ggplot2::theme_classic() +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1,
-                                           size = if (gene_type == "tf") 7 else 8),
+                                         size = ifelse(gene_type == "tf",7,8)),
       legend.position.inside = c(0.5, 0.5),
       legend.justification   = c(0.5, 0.5),
       legend.direction       = "vertical",
@@ -141,7 +152,8 @@
 #' @param gene_type "tf" or "target"
 #' @param labels integer vector of labels (default: all)
 #' @param top_n integer or NULL; max partners shown per gene (TF mode only)
-#' @param allowed_targets character vector or NULL; restrict targets to this set
+#' @param allowed_targets character vector or NULL;
+#'        restrict targets to this set
 #'   (TF mode only; use to pass pre-filtered target lists)
 #' @param grid integer vector c(nrow, ncol) per page; NULL = single page
 #' @param save logical
@@ -163,7 +175,7 @@
                                     width           = 16,
                                     height          = NULL) {
   if (!requireNamespace("ggplot2",   quietly = TRUE)) stop("ggplot2 required")
-  if (!requireNamespace("gridExtra", quietly = TRUE)) stop("gridExtra required")
+  if (!requireNamespace("gridExtra", quietly = TRUE))stop("gridExtra required")
 
   gene_type <- match.arg(gene_type)
   labels    <- .resolve_labels(x, labels)
@@ -175,7 +187,8 @@
   } else {
     genes <- intersect(as.character(gene_names), all_genes)
     if (length(genes) == 0L)
-      stop(sprintf("None of the specified %ss found in the experiment.", gene_type))
+      stop(sprintf("None of the specified %ss found in the experiment.", 
+                    gene_type))
   }
 
   n_genes <- length(genes)
@@ -281,6 +294,11 @@
 #' @param width,height page dimensions in inches
 #'
 #' @return Invisibly, a list of page grobs.
+#' @examples
+#' simic <- readRDS(system.file("extdata", "simic_full.rds", 
+#'                  package = "SimiCviz"))
+#' plot_tf_weights(simic, tf_names =c("Pms1","Tet2"),
+#'                 top_n = 20, grid = c(2, 1))
 #' @export
 plot_tf_weights <- function(x,
                             tf_names        = NULL,
@@ -328,6 +346,12 @@ plot_tf_weights <- function(x,
 #' @param width,height page dimensions in inches
 #'
 #' @return Invisibly, a list of page grobs.
+#' @examples
+#' simic <- readRDS(system.file("extdata", "simic_full.rds", 
+#'                  package = "SimiCviz"))
+#' plot_target_weights(simic, 
+#'                     target_names = c("Brinp3", "Top2a"), 
+#'                     labels = c(0, 1), grid = c(2, 1))
 #' @export
 plot_target_weights <- function(x,
                                 target_names = NULL,

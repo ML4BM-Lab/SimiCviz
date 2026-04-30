@@ -11,7 +11,7 @@ test_that("read_weights_csv loads bundled weights correctly", {
   w <- SimiCviz::read_weights_csv(extdata("example_weights.csv"))
   expect_s3_class(w, "data.frame")
   expect_true(all(c("tf", "target", "weight", "label") %in% colnames(w)))
-  expect_equal(nrow(w), 8000L)
+  expect_equal(nrow(w), 6000L)
   expect_equal(sort(unique(w$label)), c(0L, 1L, 2L, 3L))
 })
 

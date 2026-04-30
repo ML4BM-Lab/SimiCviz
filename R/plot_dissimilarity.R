@@ -5,8 +5,8 @@
 #'
 #' @param x A \code{SimiCvizExperiment} object.
 #' @param top_n Integer; number of top TFs to display (default: all).
-#' @param sort_by Column name to sort TFs by.
-#'   Default: \code{"MinMax_score"} (no groups) or \code{"mean_score"} (groups).
+#' @param sort_by Column name to sort TFs by. Default: \code{"MinMax_score"} 
+#'  (no groups) or \code{"mean_score"} (groups).
 #' @param dissim_df Optional pre-computed dissimilarity data.frame. If
 #'   \code{NULL}, \code{\link{calculate_dissimilarity}} is called internally.
 #' @param cmap Colour palette specification. Can be:
@@ -18,7 +18,8 @@
 #'     \item A character vector of 2+ colours for a custom gradient.
 #'     \item \code{NULL} (default): built-in viridis-like gradient.
 #'   }
-#' @param show_values Logical; annotate cells with numeric values (default \code{TRUE}).
+#' @param show_values Logical; annotate cells with numeric values 
+#'        (default \code{TRUE}).
 #' @param save Logical; save the plot to a PDF file (default \code{TRUE}).
 #' @param out_dir Output directory for the PDF (default: working directory).
 #' @param filename Custom filename (default: auto-generated).
@@ -29,10 +30,12 @@
 #'   \code{data} (the dissimilarity data.frame).
 #'
 #' @examples
-#'   simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+#'   simic <- readRDS(system.file("extdata", "simic_full.rds", 
+#'                                 package = "SimiCviz"))
 #'   plot_dissimilarity_heatmap(simic, top_n = 20)
-#'   plot_dissimilarity_heatmap(simic, top_n = 5, cmap = "magma", save = TRUE, width = 8, height = 10)
-#'   plot_dissimilarity_heatmap(simic, cmap = c("white", "red", "darkred"), show_values = FALSE)
+#'   plot_dissimilarity_heatmap(simic, top_n = 5, cmap = "magma") 
+#'   plot_dissimilarity_heatmap(simic, cmap = c("white", "red", "darkred"), 
+#'                              show_values = FALSE)
 #' 
 #' @import ggplot2
 #' @rdname plot_dissimilarity_heatmap
@@ -65,13 +68,15 @@ plot_dissimilarity_heatmap <- function(x,
 
   # Sort
   if (is.null(sort_by)) {
-    sort_by <- if ("mean_score" %in% colnames(dissim_df)) "mean_score" else colnames(dissim_df)[1]
+    sort_by <- if ("mean_score" %in% colnames(dissim_df)) {
+      "mean_score"}else{ colnames(dissim_df)[1]}
   }
   if (!(sort_by %in% colnames(dissim_df))) {
     warning(sprintf("sort_by='%s' not found; using first column.", sort_by))
     sort_by <- colnames(dissim_df)[1]
   }
-  dissim_df <- dissim_df[order(dissim_df[[sort_by]], decreasing = FALSE), , drop = FALSE]
+  dissim_df <- dissim_df[order(dissim_df[[sort_by]], decreasing = FALSE), ,
+                          drop = FALSE]
 
   # Top N (after sorting descending, take top_n then re-sort for plot)
   if (!is.null(top_n) && top_n < nrow(dissim_df)) {
@@ -115,7 +120,8 @@ plot_dissimilarity_heatmap <- function(x,
 
   # Compute adaptive text colors using colorspace
   long_df$text_color <- .get_text_color(long_df$fill_color)
-  p <- ggplot2::ggplot(long_df, ggplot2::aes(x = Metric, y = TF, fill = Score)) +
+  p <- ggplot2::ggplot(long_df, 
+    ggplot2::aes(x = Metric, y = TF, fill = Score)) +
     ggplot2::geom_tile(colour = "white", linewidth = 0.3) +
     fill_scale +
     ggplot2::labs(title = title_txt,
@@ -125,7 +131,8 @@ plot_dissimilarity_heatmap <- function(x,
     ggplot2::theme(
       axis.text.x  = ggplot2::element_text(angle = 45, hjust = 1, size = 10),
       axis.text.y  = ggplot2::element_text(size = 8),
-      plot.title    = ggplot2::element_text(face = "bold", size = 13, hjust = 0.5),
+      plot.title    = ggplot2::element_text(face = "bold", size = 13,
+                                            hjust = 0.5),
       panel.grid    = ggplot2::element_blank(),
       legend.position = "right"
     )

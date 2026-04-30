@@ -2,18 +2,25 @@
 #' @noRd
 .resolve_labels <- function(x, labels = NULL) {
   if (!is.null(labels)) {
-    if (is.character(labels) && !is.null(x@label_names) && all(labels %in% x@label_names)) {
+    if (is.character(labels) &&
+       !is.null(x@label_names) &&
+      all(labels %in% x@label_names)) {
       labels <- names(x@label_names)[which(x@label_names %in% labels)]
     } else if (is.character(labels) && !all(labels %in% x@label_names)) {
       show <- labels[!labels %in% x@label_names]
-      stop("Some labels not found in SimiCvizExperiment@label_names: \n\t missing -> ",
+      stop("Some labels not found in SimiCvizExperiment@label_names:
+            \n\t missing -> ",
            paste(show, collapse = ", "))
     }
     return(as.integer(labels))
   }
   auc_df <- x@auc$collected
-  if (!is.null(auc_df) && "label" %in% colnames(auc_df)) return(sort(unique(auc_df$label)))
-  if (nrow(x@cell_labels) > 0L) return(sort(unique(x@cell_labels$label)))
+  if (!is.null(auc_df) && "label" %in% colnames(auc_df)) {
+    return(sort(unique(auc_df$label)))
+    }
+  if (nrow(x@cell_labels) > 0L) {
+    return(sort(unique(x@cell_labels$label)))
+  }
   as.integer(names(x@weights))
 }
 
@@ -24,7 +31,9 @@
   if (is.null(tf_names)) return(sort(all_tfs))
   tf_names <- as.character(tf_names)
   valid <- intersect(tf_names, all_tfs)
-  if (length(valid) == 0L) stop("None of the specified TFs found in AUC data.")
+  if (length(valid) == 0L) {
+    stop("None of the specified TFs found in AUC data.")
+    }
   valid
 }
 
@@ -36,8 +45,11 @@
   for (start in seq(1, n, by = per_page)) {
     end   <- min(start + per_page - 1L, n)
     batch <- plot_list[start:end]
-    while (length(batch) < nrow * ncol) batch[[length(batch) + 1L]] <- grid::nullGrob()
-    pages[[length(pages) + 1L]] <- gridExtra::arrangeGrob(grobs = batch, nrow = nrow, ncol = ncol)
+    while (length(batch) < nrow * ncol) {
+      batch[[length(batch) + 1L]] <- grid::nullGrob()
+      }
+    pages[[length(pages) + 1L]] <- gridExtra::arrangeGrob(grobs = batch, 
+                                  nrow = nrow, ncol = ncol)
   }
   pages
 }
@@ -103,7 +115,8 @@
       viridis = c("#440154", "#31688e", "#35b779", "#fde725"),
       magma   = c("#000004", "#51127c", "#b73779", "#fc8961", "#fcfdbf"),
       plasma  = c("#0d0887", "#7e03a8", "#cc4778", "#f89540", "#f0f921"),
-      inferno = c("#000004", "#420a68", "#932667", "#dd513a", "#fca50a", "#fcffa4"),
+      inferno = c("#000004", "#420a68", "#932667", "#dd513a", "#fca50a",
+                  "#fcffa4"),
       cividis = c("#00224e", "#414d6b", "#7b7b78", "#b8a951", "#fdea45"),
       rocket  = c("#03051a", "#4c1d4e", "#a11a5b", "#e04f39", "#faebdd"),
       mako    = c("#0b0405", "#2a1858", "#245f8a", "#30b09a", "#def5e5"),
@@ -111,7 +124,8 @@
                   "#c8ef34", "#faba39", "#f66b19", "#ca240e", "#7a0403")
     )
     anchors <- fallback[[palette_name]] %||% fallback[["viridis"]]
-    message(sprintf("viridisLite not installed; using approximate '%s' palette.", palette_name))
+    message(sprintf("viridisLite not installed; using approximate 
+                     '%s' palette.", palette_name))
     return(ggplot2::scale_fill_gradientn(colours = anchors))
   }
 
@@ -161,7 +175,8 @@
         viridis = c("#440154", "#31688e", "#35b779", "#fde725"),
         magma   = c("#000004", "#51127c", "#b73779", "#fc8961", "#fcfdbf"),
         plasma  = c("#0d0887", "#7e03a8", "#cc4778", "#f89540", "#f0f921"),
-        inferno = c("#000004", "#420a68", "#932667", "#dd513a", "#fca50a", "#fcffa4"),
+        inferno = c("#000004", "#420a68", "#932667", "#dd513a", "#fca50a",
+                    "#fcffa4"),
         cividis = c("#00224e", "#414d6b", "#7b7b78", "#b8a951", "#fdea45"),
         rocket  = c("#03051a", "#4c1d4e", "#a11a5b", "#e04f39", "#faebdd"),
         mako    = c("#0b0405", "#2a1858", "#245f8a", "#30b09a", "#def5e5"),

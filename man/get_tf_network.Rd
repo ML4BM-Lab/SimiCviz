@@ -27,9 +27,9 @@ label receive \code{NA} (analogous to Python's \code{get_TF_network(...,
 stacked=TRUE)}).
 }
 \examples{
-\dontrun{
-  # Example usage
-  network <- get_tf_network(simic, "Tead1", labels = c(1, 2), r2_threshold = 0.7)
+ # Example usage
+  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+  network <- get_tf_network(simic, simic@tf_ids[1], labels = c(1, 2), r2_threshold = 0.7)
   print(network)
-}
+
 }

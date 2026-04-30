@@ -16,6 +16,24 @@
 #' @param verbose print progress messages
 #'
 #' @return SimiCvizExperiment with computed AUC scores added to @auc slot
+#' @examples 
+#' # Generate minimal example data
+#' weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+#'                              dimnames = list(paste0("TF", 1:3), 
+#'                                              paste0("Gene", 1:30)))),
+#'                      "1" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+#'                              dimnames = list(paste0("TF", 1:3), 
+#'                                              paste0("Gene", 1:30)))))
+#' cell_labels <- data.frame(cell= c("Cell1", "Cell2"), label = c("0", "1"))
+#' simic <- SimiCvizExperiment(weights = weights_list, cell_labels = cell_labels)
+#' expr <- matrix(rnorm(60), nrow=2, byrow = FALSE, 
+#'                 dimnames = list(c("Cell1", "Cell2"),paste0("Gene", 1:30)))
+#' simic <- calculate_activity_scores(simic,
+#'                                   expression = expr,
+#'                                   sort_by = "expression",
+#'                                   n_cores = 2,
+#'                                   backend ="multicore")
+#'
 #' @export
 calculate_activity_scores <- function(simic,
                                       expression = NULL,

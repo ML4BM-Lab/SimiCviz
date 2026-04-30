@@ -15,3 +15,13 @@ Logical, TRUE if x is a SimiCvizExperiment.
 \description{
 Tests whether an object is of class SimiCvizExperiment.
 }
+\examples{
+  weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3,
+                                           dimnames = list(paste0("TF", 1:3),
+                                                           paste0("Gene", 1:30)))),
+                     "1" = as.data.frame(matrix(rnorm(90), nrow = 3),
+                                         dimnames = list(paste0("TF", 1:3),
+                                                         paste0("Gene", 1:30))))
+  simic <- SimiCvizExperiment(weights = weights_list)
+  is.SimiCvizExperiment(simic) # should return TRUE
+}

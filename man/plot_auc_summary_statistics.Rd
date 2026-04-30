@@ -36,3 +36,7 @@ Invisibly, a named list of plot objects.
 \description{
 Plot AUC summary statistics
 }
+\examples{
+simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+plot_auc_summary_statistics(simic)
+}

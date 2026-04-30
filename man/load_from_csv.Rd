@@ -27,3 +27,16 @@ and optionally label).}
 \description{
 Create a SimiCvizExperiment from CSV files
 }
+\examples{
+# Example usage with CSV files
+weight_path <- system.file("extdata", "example_weights.csv",  package = "SimiCviz")
+auc_path <- system.file("extdata", "example_auc.csv",  package = "SimiCviz")
+cell_labels_path <- system.file("extdata",
+                    file.path("inputFiles", "treatment_annotation.csv"),
+                               package = "SimiCviz")
+simic <- load_from_csv(weights_file = weight_path,
+                       auc_file = auc_path,
+                       cell_labels_file = cell_labels_path,
+                       meta = list(run_name = "example_run"))
+is.SimiCvizExperiment(simic) # TRUE
+}

@@ -240,7 +240,7 @@ viz_obj_simic
 
 # Computing Activity Scores (AUC)
 
-In many biological contexts, we aim to quantify changes in GRN activity across cell populations. This is achieved by computing an activity score for each TF in each cell, as described in the original [**SimiC**](https://www.nature.com/articles/s42003-022-03319-7.pdf) article by Peng *et al* published in  *Communications Biology* (2021). Here, we provide wrapper functions to apply this approach to outputs from `SimiCPipeline` or other GRN inference methods.
+In many biological contexts, we aim to quantify changes in GRN activity across cell populations. This is achieved by computing an activity score for each TF in each cell, as described in the original [**SimiC**](https://www.nature.com/articles/s42003-022-03319-7.pdf) article by Peng *et al* published in  *Communications Biology* (2022). Here, we provide wrapper functions to apply this approach to outputs from `SimiCPipeline` or other GRN inference methods.
 
 ## Quick Start
 

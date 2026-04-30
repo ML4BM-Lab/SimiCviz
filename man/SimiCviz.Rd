@@ -22,8 +22,16 @@ reproducible directory hierarchy.
 The package is designed to be lightweight and focused on visualization,
 leaving modeling and inference to SimiCPipeline itself.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/ML4BM-Lab/SimiCviz}
+  \item Report bugs at \url{https://github.com/ML4BM-Lab/SimiCviz/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Irene Marin-Goni \email{imarin.4@alumni.unav.es} (\href{https://orcid.org/0000-0002-5060-0712}{ORCID})
+\strong{Maintainer}: Irene Marín-Goñi \email{imarin.4@alumni.unav.es} (\href{https://orcid.org/0000-0002-5060-0712}{ORCID})
 
 }
 \keyword{internal}

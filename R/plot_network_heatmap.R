@@ -1,9 +1,9 @@
 #' Extract stacked TF-target weight matrix across labels
 #'
-#' For a given TF, extracts the regulatory weight for every target gene in each
-#' label. Targets whose adjusted R² falls below \code{r2_threshold} in a given
-#' label receive \code{NA} (analogous to Python's \code{get_TF_network(...,
-#' stacked=TRUE)}).
+#' For a given TF, extracts the regulatory weight for every target gene 
+#' in each label. Targets whose adjusted R² falls below
+#' \code{r2_threshold} in a given label receive \code{NA} 
+#' (analogous to Python's \code{get_TF_network(..., stacked=TRUE)}).
 #'
 #' @param x A \code{SimiCvizExperiment} object.
 #' @param tf_name Character; name of the transcription factor.
@@ -14,8 +14,11 @@
 #'   (named by \code{label_names}).
 #' @examples
 #'  # Example usage
-#'   simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
-#'   network <- get_tf_network(simic, simic@tf_ids[1], labels = c(1, 2), r2_threshold = 0.7)
+#'   simic <- readRDS(system.file("extdata", "simic_full.rds", 
+#'                     package = "SimiCviz"))
+#'   network <- get_tf_network(simic, c("Tet2"), 
+#'                             labels = c(1, 2), 
+#'                             r2_threshold = 0.7)
 #'   print(network)
 #'
 #' @export
@@ -53,8 +56,10 @@ get_tf_network <- function(x, tf_name, labels = NULL, r2_threshold = NULL) {
         below_thresh <- r2_vals < r2_threshold
         weights_vec[below_thresh] <- NA_real_
       }
-    } else if (!is.null(r2_threshold) && length(x@meta$adjusted_r_squared) == 0L) {
-        warning(sprintf("No adjusted R\u00B2 values found for label '%s'; skipping R\u00B2 filtering.", lab_name))
+    } else if (!is.null(r2_threshold) && 
+                length(x@meta$adjusted_r_squared) == 0L) {
+        warning(sprintf("No adjusted R\u00B2 values found for label '%s'; 
+                         skipping R\u00B2 filtering.", lab_name))
       }
 
     result[[lab_name]] <- weights_vec
@@ -68,8 +73,9 @@ get_tf_network <- function(x, tf_name, labels = NULL, r2_threshold = NULL) {
 
 #' Plot heatmap of a TF regulatory network across phenotypes
 #'
-#' Displays a heatmap showing the regulatory weights of a single transcription
-#' factor across its top target genes, with one column per phenotype label.
+#' Displays a heatmap showing the regulatory weights of a 
+#' single transcription factor across its top target genes, 
+#' with one column per phenotype label.
 #' Targets that fail the adjusted-R² filter are shown as grey cells labelled
 #' \emph{"< R² threshold"}, mirroring the Python
 #' \code{SimiCVisualization.plot_tf_network_heatmap()} method.
@@ -104,16 +110,18 @@ get_tf_network <- function(x, tf_name, labels = NULL, r2_threshold = NULL) {
 #'   }
 #'
 #' @examples
-#'   simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+#'   simic <- readRDS(system.file("extdata", "simic_full.rds", 
+#'                                package = "SimiCviz"))
 #'   plot_tf_network_heatmap(simic, "Pms1")
 #'
 #'   # Custom palette and top targets
 #'   plot_tf_network_heatmap(simic, "Ets1", top_n = 15,
-#'                           cmap = "RdBu_r", r2_threshold = 0.7)
+#'                           cmap = c("white", "red", "darkred"), 
+#'                           r2_threshold = 0.7)
 #'
 #'   # Only specific labels, no saving
-#'   plot_tf_network_heatmap(simic, "Gli3", labels = c(0, 3),
-#'                           save = FALSE)
+#'   plot_tf_network_heatmap(simic, "Gli3", labels = c(0, 3), 
+#'                           show_values = FALSE)
 #'
 #' @import ggplot2
 #' @export
@@ -159,39 +167,40 @@ plot_tf_network_heatmap <- function(x,
   long_df <- reshape2::melt(network, id.vars = "target",
                             variable.name = "condition",
                             value.name    = "weight")
-  long_df$condition <- factor(long_df$condition, levels = colnames(network)[colnames(network) != "target"])
+  long_df$condition <- factor(long_df$condition, 
+                    levels = colnames(network)[colnames(network) != "target"])
   long_df$is_na     <- is.na(long_df$weight)
 
-  # ---- Symmetric colour limits -----------------------------------------------
+  # ---- Symmetric colour limits ------------------------------------------
   non_na_vals <- long_df$weight[!long_df$is_na]
   if (length(non_na_vals) == 0L) {
     non_na_vals <- 0
   }
 
-  # ---- Build fill scale (diverging, with NA colour) -------------------------
+  # ---- Build fill scale (diverging, with NA colour) ---------------------
   fill_scale <- .build_ggplot_fill_scale(cmap)
 
-  # ---- Adaptive text colours -------------------------------------------------
+  # ---- Adaptive text colours --------------------------------------------
   pal_fun <- .build_palette_function(cmap, domain = non_na_vals)
   long_df$fill_color <- ifelse(long_df$is_na, "#A9A9A9",
                                pal_fun(long_df$weight))
   long_df$text_color <- ifelse(long_df$is_na, "black",
                                .get_text_color(long_df$fill_color))
 
-  # ---- Cell label text -------------------------------------------------------
+  # ---- Cell label text --------------------------------------------------
   long_df$label_text <- ifelse(
     long_df$is_na,
     "< R\u00B2 threshold",
     sprintf("%.2f", long_df$weight)
   )
 
-  # ---- Auto dimensions -------------------------------------------------------
+  # ---- Auto dimensions ---------------------------------------------------
   n_rows <- length(top_targets)
   n_cols <- ncol(network) - 1L   # exclude the "target" column
   if (is.null(width))  width  <- max(8, n_cols * 1.5 + 3)
   if (is.null(height)) height <- max(6, n_rows * 0.4 + 2)
 
-  # ---- Build plot -------------------------------------------------------------
+  # ---- Build plot --------------------------------------------------------
   title_txt <- sprintf(" %s Regulatory Network", tf_name)
   subtitle_txt <- sprintf( "Top %d targets across phenotypes", top_n)
 
@@ -216,7 +225,8 @@ plot_tf_network_heatmap <- function(x,
     ggplot2::theme(
       axis.text.x   = ggplot2::element_text(angle = 45, hjust = 1, size = 10),
       axis.text.y   = ggplot2::element_text(size = 9),
-      plot.title     = ggplot2::element_text(face = "bold", size = 13, hjust = 0.5),
+      plot.title     = ggplot2::element_text(face = "bold", size = 13, 
+                                             hjust = 0.5),
       plot.subtitle = element_text(hjust = 0.5),
       panel.grid     = ggplot2::element_blank(),
       legend.position = "right"
@@ -233,7 +243,7 @@ plot_tf_network_heatmap <- function(x,
       ggplot2::scale_colour_identity()
   }
 
-  # ---- Save / display ---------------------------------------------------------
+  # ---- Save / display ----------------------------------------------------
   if (save) {
     if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
     fname <- if (is.null(filename)) {

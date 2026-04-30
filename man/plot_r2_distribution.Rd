@@ -54,3 +54,8 @@ Called for side effects (plots). Returns \code{invisible(NULL)}.
 Plots histograms of adjusted R² values per label, similar to the Python
 \code{SimiCVisualization$plot_r2_distribution}.
 }
+\examples{
+  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+  plot_r2_distribution(simic@meta$adjusted_r_squared, simic, grid = c(2, 2))
+  plot_r2_distribution(simic@meta$adjusted_r_squared, simic, threshold = 0.9, labels = c(0, 1))
+}

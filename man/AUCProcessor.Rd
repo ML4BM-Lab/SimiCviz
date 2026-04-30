@@ -35,7 +35,7 @@ matching Seurat/SingleCellExperiment conventions.}
 \item{backend}{parallelization backend ("sequential", "multicore", "multisession")}
 }
 \value{
-AUCProcessor object
+A \code{\linkS4class{AUCProcessor}} object with initialized slots.
 }
 \description{
 Initialize AUCProcessor

@@ -51,3 +51,12 @@ Invisibly, a list of grobs/plots.
 \description{
 Plot AUC cumulative (ECDF) curves by label
 }
+\examples{
+simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+plot_auc_cumulative(
+  simic,
+  tf_names      = simic@tf_ids[1:2],
+  rug           = TRUE,
+  grid          = c(1L, 2L)
+)
+}

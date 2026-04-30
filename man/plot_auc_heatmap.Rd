@@ -42,3 +42,7 @@ Invisibly, the ggplot object.
 \description{
 Plot mean AUC heatmap by TF and label
 }
+\examples{
+simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+plot_auc_heatmap(simic, top_n = 5)
+}

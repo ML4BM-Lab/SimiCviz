@@ -19,3 +19,16 @@ data.frame with weights.
 \description{
 Read Long-style TF-target weights from CSV (compatibility)
 }
+\examples{
+weight_path <- system.file("extdata", "example_weights.csv",  package = "SimiCviz")
+weights_df <- read_weights_csv(weight_path)
+head(weights_df)
+#       tf target    weight label
+# 1   Pms1 Brinp3 0.0000000     0
+# 2  Prrx2 Brinp3 1.5622762     0
+# 3   Ets1 Brinp3 0.0000000     0
+# 4   Tet2 Brinp3 0.8540945     0
+# 5 Crebrf Brinp3 0.0000000     0
+# 6   Gli3 Brinp3 0.0000000     0
+
+}
