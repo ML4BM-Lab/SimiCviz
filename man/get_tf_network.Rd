@@ -21,15 +21,18 @@ A data.frame with target genes as rows and one column per label
 (named by \code{label_names}).
 }
 \description{
-For a given TF, extracts the regulatory weight for every target gene in each
-label. Targets whose adjusted R² falls below \code{r2_threshold} in a given
-label receive \code{NA} (analogous to Python's \code{get_TF_network(...,
-stacked=TRUE)}).
+For a given TF, extracts the regulatory weight for every target gene
+in each label. Targets whose adjusted R² falls below
+\code{r2_threshold} in a given label receive \code{NA}
+(analogous to Python's \code{get_TF_network(..., stacked=TRUE)}).
 }
 \examples{
  # Example usage
-  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
-  network <- get_tf_network(simic, simic@tf_ids[1], labels = c(1, 2), r2_threshold = 0.7)
+  simic <- readRDS(system.file("extdata", "simic_full.rds", 
+                    package = "SimiCviz"))
+  network <- get_tf_network(simic, c("Tet2"), 
+                            labels = c(1, 2), 
+                            r2_threshold = 0.7)
   print(network)
 
 }

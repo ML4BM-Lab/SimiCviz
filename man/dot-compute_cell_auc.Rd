@@ -16,7 +16,8 @@
 \arguments{
 \item{expr_row}{expression values for target genes (vector)}
 
-\item{weight_df}{weight data.frame subset for this cell's label (columns: tf, target, weight)}
+\item{weight_df}{weight data.frame subset for this cell's label
+(columns: tf, target, weight)}
 
 \item{target_norm}{precomputed Euclidean norm of target expression (vector)}
 

@@ -32,3 +32,8 @@ A \code{data.frame} with TFs as rows, sorted by score (descending).
 Compares per-cell TF activity-score distributions between phenotype labels
 using a histogram-based MinMax divergence.
 }
+\examples{
+simic <- readRDS(system.file("extdata", "simic_full.rds", 
+         package = "SimiCviz"))
+dis_score <- calculate_dissimilarity(simic)
+}

@@ -29,3 +29,9 @@ Allowed formats:
 \item matrix or data.frame in R
 }
 }
+\examples{
+expression_mat_path <- system.file("extdata", 
+                       file.path("inputFiles", "example1_expression.pickle"),
+                       package = "SimiCviz")
+expression_mat <- load_expression_matrix(expression_mat_path)
+}

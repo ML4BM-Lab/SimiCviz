@@ -25,7 +25,8 @@ gene, weight, label_name}
 
 \item{top_n}{integer or NULL; keep only top N partners by mean abs weight}
 
-\item{allowed_genes}{character vector or NULL; restrict partner genes to this set}
+\item{allowed_genes}{character vector or NULL;
+restrict partner genes to this set}
 }
 \value{
 ggplot object

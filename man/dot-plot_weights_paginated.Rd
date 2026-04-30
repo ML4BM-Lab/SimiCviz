@@ -30,7 +30,8 @@
 
 \item{top_n}{integer or NULL; max partners shown per gene (TF mode only)}
 
-\item{allowed_targets}{character vector or NULL; restrict targets to this set
+\item{allowed_targets}{character vector or NULL;
+restrict targets to this set
 (TF mode only; use to pass pre-filtered target lists)}
 
 \item{grid}{integer vector c(nrow, ncol) per page; NULL = single page}

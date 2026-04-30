@@ -52,7 +52,7 @@ NULL
 #'                              dimnames = list(paste0("TF", 1:3), 
 #'                                              paste0("Gene", 1:30)))))
 #' cell_labels <- data.frame(cell= c("Cell1", "Cell2"), label = c("0", "1"))
-#' simic <- SimiCvizExperiment(weights = wt, cell_labels = cell_labels)
+#' simic <- SimiCvizExperiment(weights = weights_list, cell_labels = cell_labels)
 #'
 #' @export
 setClass(

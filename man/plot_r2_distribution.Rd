@@ -18,8 +18,8 @@ plot_r2_distribution(
 )
 }
 \arguments{
-\item{adjusted_r_squared}{A \strong{named list} of numeric vectors, one per
-label.
+\item{adjusted_r_squared}{A \strong{named list} of numeric vectors,
+one per label.
 Names must be label identifiers (e.g. \code{"0"}, \code{"1"}, …).
 This metric is specific to SimiC's regression step; other methods may not
 produce it, so it is kept as an explicit input rather than extracted from
@@ -27,8 +27,8 @@ the experiment object.}
 
 \item{x}{Optional \code{SimiCvizExperiment} object used solely to resolve
 display names and colors for labels.
-If \code{NULL}, default \code{"Label i"} naming and a built-in palette are
-used.}
+If \code{NULL}, default \code{"Label i"} naming and a built-in
+palette are used.}
 
 \item{labels}{Optional vector of labels to plot (subset of
 \code{names(adjusted_r_squared)}). Defaults to all.}
@@ -55,7 +55,10 @@ Plots histograms of adjusted R² values per label, similar to the Python
 \code{SimiCVisualization$plot_r2_distribution}.
 }
 \examples{
-  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
-  plot_r2_distribution(simic@meta$adjusted_r_squared, simic, grid = c(2, 2))
-  plot_r2_distribution(simic@meta$adjusted_r_squared, simic, threshold = 0.9, labels = c(0, 1))
+  simic <- readRDS(system.file("extdata", "simic_full.rds",
+                                package = "SimiCviz"))
+  plot_r2_distribution(simic@meta$adjusted_r_squared, simic,
+                        grid = c(2, 2))
+  plot_r2_distribution(simic@meta$adjusted_r_squared, simic,
+                       threshold = 0.9, labels = c(0, 1))
 }

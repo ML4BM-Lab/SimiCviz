@@ -10,16 +10,20 @@ auc_list_to_df(auc_list, cell_labels_df)
 \item{auc_list}{Named list of AUC matrices (cells × TFs). Names should
 correspond to label identifiers (e.g. "0", "1").}
 
-\item{cell_labels_df}{A data.frame with columns \code{cell} and \code{label},
-as returned by \code{\link{load_cell_labels}}.}
+\item{cell_labels_df}{A data.frame with columns
+\code{cell} and \code{label}, as returned by
+\code{\link{load_cell_labels}}.}
 }
 \value{
-A data.frame with cells in rows and TFs in columns, containing the activity scores for the specific labels.
+A data.frame with cells in rows and TFs in columns,
+containing the activity scores for the specific labels.
 }
 \description{
 Given a list of AUC matrices (one per label) and a cell-labels data.frame,
-subsets each matrix to include only the cells belonging to that label and collects them into a single data.frame.
-This is a helper function to transform raw per-label AUC outputs into the "collected" format used by \code{SimiCvizExperiment@auc}.
+subsets each matrix to include only the cells belonging to
+that label and collects them into a single data.frame.
+This is a helper function to transform raw per-label AUC
+outputs into the "collected" format used by \code{SimiCvizExperiment@auc}.
 }
 \examples{
 # Example usage with per-label AUC matrices

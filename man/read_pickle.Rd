@@ -15,3 +15,9 @@ object containing the contents of the pickle file
 \description{
 Read pickle files
 }
+\examples{
+weights_file <- system.file("extdata",  
+                file.path("outputSimic/example1_simic_weights.pickle"), 
+                package = "SimiCviz")
+simic_weights <- read_pickle(weights_file)
+}

@@ -163,7 +163,7 @@ calculate_dissimilarity <- function(x,
               sum(sapply(auc_list, nrow))))}
     if (length(auc_list) < 2L) {
       if (verbose){
-        message(sprintf("    Warning: <2 labels with cells for '%s', skipping.", gname))
+       message(sprintf("    Warning: <2 labels with cells for '%s', skipping.", gname))
       }
       group_scores[[gname]] <- rep(0, length(tf_cols))
     } else {

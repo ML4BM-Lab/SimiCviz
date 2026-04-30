@@ -33,3 +33,17 @@ A \code{data.frame} with columns \code{cell} (character) and
 Reads or constructs a two-column \code{data.frame} (\code{cell}, \code{label})
 from various input formats.
 }
+\examples{
+cell_labels_path <- system.file("extdata", 
+                     file.path("inputFiles", "treatment_annotation.csv"), 
+                      package = "SimiCviz")
+cell_labels <- load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
+head(cell_labels)
+  #       cell category label
+  # 1 05_87_62__s5  control     0
+  # 2 02_84_27__s3  control     0
+  # 3 02_95_13__s5  control     0
+  # 4 06_61_12__s1  control     0
+  # 5 03_14_11__s5  control     0
+  # 6 05_46_81__s4  control     0
+}

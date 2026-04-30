@@ -12,7 +12,8 @@
 \item{object}{A \code{\linkS4class{AUCProcessor}} object.}
 }
 \value{
-An object of class \code{AUCProcessor} with slots for weights, expression, and computed AUC scores.
+An object of class \code{AUCProcessor} with slots for weights,
+expression, and computed AUC scores.
 }
 \description{
 Efficient calculator for TF activity scores (AUC) based on GRN weights
@@ -38,19 +39,18 @@ and cell-specific expression.
 
 \examples{
 # Initialize an AUCProcessor object
-  wt <- data.frame(tf     = c("TF1", "TF2"),
-                   target = c("Gene1", "Gene2"), 
-                   weight = c(0.5, 0.8),
-                   label  = c(0, 1)
-                  )
- cell_labels <- data.frame( cell  = c("Cell1", "Cell2"),
-                            label = c(0, 1)
-                          )
- expr <- matrix( c(6,2,1,3,1,1), nrow = 3, byrow = TRUE,
-                 dimnames = list(c("Gene1", "Gene2", "TF1"),
-                 c("Cell1", "Cell2")))
- processor <- AUCProcessor(weights     = wt,
-                           expression  = expr,
-                           cell_labels = cell_labels)
+weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+                             dimnames = list(paste0("TF", 1:3), 
+                                             paste0("Gene", 1:30)))),
+                     "1" = as.data.frame(matrix(rnorm(90), nrow = 3, 
+                             dimnames = list(paste0("TF", 1:3), 
+                                             paste0("Gene", 1:30)))))
+cell_labels <- data.frame(cell= c("Cell1", "Cell2"), label = c("0", "1"))
+expr <- matrix(rnorm(60), nrow=2, byrow = FALSE, 
+                dimnames = list(c("Cell1", "Cell2"),paste0("Gene", 1:30)))
+
+processor <- AUCProcessor(weights     = weights_list,
+                          expression  = expr,
+                          cell_labels = cell_labels)
 
 }

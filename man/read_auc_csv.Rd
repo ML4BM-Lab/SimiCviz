@@ -18,3 +18,8 @@ data.frame with AUC metrics.
 \description{
 Read SimiC-style AUC results from CSV (compatibility)
 }
+\examples{
+auc_path <- system.file("extdata", "example_auc.csv",
+               package = "SimiCviz")
+auc_df <- read_auc_csv(auc_path)
+}

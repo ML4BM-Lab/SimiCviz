@@ -34,6 +34,6 @@ Calculates the area under the empirical cumulative distribution function.
 }
 \examples{
 simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
-ecdf_metrics <- calculate_ecdf_auc(simic, tf_names = simic@tf_ids[1:2])
+ecdf_metrics <- calculate_ecdf_auc(simic, tf_names = c("Pms1","Ets1"))
 head(ecdf_metrics)
 }

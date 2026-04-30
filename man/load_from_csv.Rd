@@ -17,7 +17,8 @@ and optionally label).}
 
 \item{auc_file}{optional CSV with AUC metrics (collected cells × TF format).}
 
-\item{cell_labels_file}{optional CSV with cell labels (required columns: cell, label).}
+\item{cell_labels_file}{optional CSV with cell labels
+(required columns: cell, label).}
 
 \item{meta}{optional named list with metadata.}
 }
@@ -29,8 +30,10 @@ Create a SimiCvizExperiment from CSV files
 }
 \examples{
 # Example usage with CSV files
-weight_path <- system.file("extdata", "example_weights.csv",  package = "SimiCviz")
-auc_path <- system.file("extdata", "example_auc.csv",  package = "SimiCviz")
+weight_path <- system.file("extdata", "example_weights.csv",  
+                package = "SimiCviz")
+auc_path <- system.file("extdata", "example_auc.csv", 
+                package = "SimiCviz")
 cell_labels_path <- system.file("extdata",
                     file.path("inputFiles", "treatment_annotation.csv"),
                                package = "SimiCviz")

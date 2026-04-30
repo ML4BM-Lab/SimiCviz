@@ -10,8 +10,15 @@ read_weights_pickle(file)
 \item{file}{path to the pickle file containing SimiC weights.}
 }
 \value{
-A list of length n_labels (phenotypes) with GRN weight matrices (TFs x targets).
+A list of length n_labels (phenotypes) with GRN weight matrices
+(TFs x targets).
 }
 \description{
 Read SimiCPipeline output weights (pickle file)
+}
+\examples{
+weights_file <- system.file("extdata",  
+                file.path("outputSimic/example1_simic_weights.pickle"), 
+                package = "SimiCviz")
+simic_weights <- read_weights_pickle(weights_file)
 }

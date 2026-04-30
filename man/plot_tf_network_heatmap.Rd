@@ -61,21 +61,25 @@ Invisibly, a list with components:
 }
 }
 \description{
-Displays a heatmap showing the regulatory weights of a single transcription
-factor across its top target genes, with one column per phenotype label.
+Displays a heatmap showing the regulatory weights of a
+single transcription factor across its top target genes,
+with one column per phenotype label.
 Targets that fail the adjusted-R² filter are shown as grey cells labelled
 \emph{"< R² threshold"}, mirroring the Python
 \code{SimiCVisualization.plot_tf_network_heatmap()} method.
 }
 \examples{
-  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+  simic <- readRDS(system.file("extdata", "simic_full.rds", 
+                               package = "SimiCviz"))
   plot_tf_network_heatmap(simic, "Pms1")
 
   # Custom palette and top targets
   plot_tf_network_heatmap(simic, "Ets1", top_n = 15,
-                          cmap = c("white", "red", "darkred"), r2_threshold = 0.7)
+                          cmap = c("white", "red", "darkred"), 
+                          r2_threshold = 0.7)
 
   # Only specific labels, no saving
-  plot_tf_network_heatmap(simic, "Gli3", labels = c(0, 3), show_values = FALSE)
+  plot_tf_network_heatmap(simic, "Gli3", labels = c(0, 3), 
+                          show_values = FALSE)
 
 }

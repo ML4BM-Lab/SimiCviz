@@ -32,20 +32,21 @@ Loads weights and AUC data following this priority chain for AUC:
 \item Collected CSV (cells × TF, all labels merged)
 load_collected_auc
 \item Per-label pickle → collect → save CSV
-read_auc_pickle → auc_list_to_df → save_collected_auc
+read_auc_pickle → auc_list_to_df → .save_collected_auc (internal)
 }
 }
 \details{
 The canonical AUC format stored in \code{SimiCvizExperiment@auc} is always
 a single data.frame with cells in rows and TFs in columns (the "collected"
-format), compatible with any GRN method producing per-cell TF activity scores.
+format), compatible with any GRN method producing per-cell
+TF activity scores.
 }
 \examples{
-\dontrun{
-  simic_full <- load_SimiCPipeline(
-                project_dir = "path/to/simic_run",
-                run_name    = "example1",
-                lambda1     = "0.01",
-                lambda2     = "0.001")
+\donttest{
+# simic_full <- load_SimiCPipeline(
+#                project_dir = "path/to/simic_run",
+#                run_name    = "example1",
+#                lambda1     = "0.01",
+#                lambda2     = "0.001")
 }
 }

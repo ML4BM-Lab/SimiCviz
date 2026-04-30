@@ -107,7 +107,7 @@ viz_obj_simic
 # From SimiC input files
 # adj_r2_threshold: For SimiCPipeline style outputs it will look in metadata of viz_obj_simic, for "simic@meta$adjusted_r_squared" and filter out targets with lower R²)
 # n_cores: Number of workers if backend = 'multissession' or 
-#          Number of cores if 'multiprocess'
+#          Number of cores if backend  = 'multicore'
 
 viz_obj_simic <- calculate_activity_scores(
               viz_obj_simic,
@@ -117,7 +117,7 @@ viz_obj_simic <- calculate_activity_scores(
               select_top_k = NULL,  # Use all targets (or limit to top K)
               percent_of_target = 1.0,  
               n_cores = 2,
-              backend = "multisession",
+              backend = "multicore",
               verbose = TRUE
             )
 
@@ -304,7 +304,7 @@ plot_tf_network_heatmap(simic, "Tet2",
                         save = FALSE, 
                         top_n = 15,
                         r2_threshold = 0.7,
-                        show_values = T, 
+                        show_values = TRUE, 
                         cmap = c("purple","white","yellow"))
 
 

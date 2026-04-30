@@ -83,7 +83,7 @@ read_auc_pickle <- function(file) {
 
 #' Load a collected AUC CSV into a data.frame
 #'
-#' Reads a cells × TF CSV file (as written by \code{\link{.save_collected_auc}}
+#' Reads a cells × TF CSV file (as written by internal function \code{.save_collected_auc}
 #' or SimiCPipeline). This is the canonical import for any GRN method that
 #' produces per-cell TF activity scores.
 #'
@@ -485,11 +485,11 @@ load_expression_matrix <- function(expression) {
 #' @return \code{\link{SimiCvizExperiment}} object.
 #' @examples 
 #' \donttest{
-#'   simic_full <- load_SimiCPipeline(
-#'                 project_dir = "path/to/simic_run",
-#'                 run_name    = "example1",
-#'                 lambda1     = "0.01",
-#'                 lambda2     = "0.001")
+#' # simic_full <- load_SimiCPipeline(
+#' #                project_dir = "path/to/simic_run",
+#' #                run_name    = "example1",
+#' #                lambda1     = "0.01",
+#' #                lambda2     = "0.001")
 #' }
 #' @export
 load_SimiCPipeline <- function(project_dir,

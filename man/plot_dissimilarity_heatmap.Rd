@@ -24,8 +24,8 @@ plot_dissimilarity_heatmap(
 
 \item{top_n}{Integer; number of top TFs to display (default: all).}
 
-\item{sort_by}{Column name to sort TFs by.
-Default: \code{"MinMax_score"} (no groups) or \code{"mean_score"} (groups).}
+\item{sort_by}{Column name to sort TFs by. Default: \code{"MinMax_score"}
+(no groups) or \code{"mean_score"} (groups).}
 
 \item{dissim_df}{Optional pre-computed dissimilarity data.frame. If
 \code{NULL}, \code{\link{calculate_dissimilarity}} is called internally.}
@@ -40,7 +40,8 @@ Default: \code{"MinMax_score"} (no groups) or \code{"mean_score"} (groups).}
 \item \code{NULL} (default): built-in viridis-like gradient.
 }}
 
-\item{show_values}{Logical; annotate cells with numeric values (default \code{TRUE}).}
+\item{show_values}{Logical; annotate cells with numeric values
+(default \code{TRUE}).}
 
 \item{save}{Logical; save the plot to a PDF file (default \code{TRUE}).}
 
@@ -61,9 +62,11 @@ Displays a heatmap of TF regulatory dissimilarity scores, optionally
 broken down by cell group. Uses \pkg{ggplot2} tile geometry.
 }
 \examples{
-  simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
+  simic <- readRDS(system.file("extdata", "simic_full.rds", 
+                                package = "SimiCviz"))
   plot_dissimilarity_heatmap(simic, top_n = 20)
   plot_dissimilarity_heatmap(simic, top_n = 5, cmap = "magma") 
-  plot_dissimilarity_heatmap(simic, cmap = c("white", "red", "darkred"), show_values = FALSE)
+  plot_dissimilarity_heatmap(simic, cmap = c("white", "red", "darkred"), 
+                             show_values = FALSE)
 
 }

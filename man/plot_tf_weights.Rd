@@ -51,3 +51,9 @@ For each TF, shows a grouped bar chart of regulatory weights across all
 target genes, coloured by phenotype label. Mirrors
 \code{SimiCVisualization.plot_tf_weights} from the Python package.
 }
+\examples{
+simic <- readRDS(system.file("extdata", "simic_full.rds", 
+                 package = "SimiCviz"))
+plot_tf_weights(simic, tf_names =c("Pms1","Tet2"),
+                top_n = 20, grid = c(2, 1))
+}
