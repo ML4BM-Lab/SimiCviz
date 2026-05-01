@@ -15,7 +15,8 @@ load_collected_auc(file, ...)
 A data.frame with cell IDs as row names.
 }
 \description{
-Reads a cells × TF CSV file (as written by internal function \code{.save_collected_auc}
+Reads a cells × TF CSV file (as written by internal
+function \code{.save_collected_auc}
 or SimiCPipeline). This is the canonical import for any GRN method that
 produces per-cell TF activity scores.
 }

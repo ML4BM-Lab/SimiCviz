@@ -83,7 +83,8 @@ read_auc_pickle <- function(file) {
 
 #' Load a collected AUC CSV into a data.frame
 #'
-#' Reads a cells × TF CSV file (as written by internal function \code{.save_collected_auc}
+#' Reads a cells × TF CSV file (as written by internal 
+#' function \code{.save_collected_auc}
 #' or SimiCPipeline). This is the canonical import for any GRN method that
 #' produces per-cell TF activity scores.
 #'
@@ -530,8 +531,8 @@ load_SimiCPipeline <- function(project_dir,
                                  output_files)]
   }
   if (length(weights_file) > 1L) {
-    print("Multiple weights files found:")
-    print(weights_file)
+    message("Multiple weights files found:")
+    message(weights_file)
     stop("Please review the directory outputs. Only one file per 
           run_name + L1 + L2 should be found.")
   }
@@ -571,8 +572,8 @@ load_SimiCPipeline <- function(project_dir,
     auc <- auc_collected <- load_collected_auc(auc_csv_file)
 
   } else if (length(auc_csv_file) > 1L) {
-    print("Multiple AUC CSV files found:")
-    print(auc_csv_file)
+    message("Multiple AUC CSV files found:")
+    message(auc_csv_file)
     stop("Multiple AUC CSV files found. Please make sure only 
          one collected.csv file by run_name and lambda parameters is found.")
   
@@ -587,8 +588,8 @@ load_SimiCPipeline <- function(project_dir,
       message("No AUC pickle file found. AUC will be set to NULL.")
     
     } else if (length(auc_pickle_file) > 1L) {
-      print("Multiple AUC pickle files found:")
-      print(auc_pickle_file)
+      message("Multiple AUC pickle files found:")
+      message(auc_pickle_file)
       stop("Multiple AUC pickle files found. Please make sure only
             one pickle file by run_name and lambda parameters is found.")
     } else {
@@ -606,8 +607,8 @@ load_SimiCPipeline <- function(project_dir,
       if (length(cell_labels_file) == 0L) {
         message("No cell labels file found. Cell labels will be set to NULL.")
       } else if (length(cell_labels_file) > 1L) {
-        print("Multiple cell labels files found:")
-        print(cell_labels_file)
+        message("Multiple cell labels files found:")
+        message(cell_labels_file)
         stop("Multiple cell labels files found. Please ensure only 
               one .txt file is present in the inputFiles directory.")
       } else {

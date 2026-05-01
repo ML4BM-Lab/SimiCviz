@@ -527,9 +527,9 @@ is.SimiCvizExperiment <- function(x) {
   if (n_labels > 0L && length(cols) > n_labels) {
     warning(sprintf(
       "`colors` length (%d) does not match the number of labels in experiment (%d). Selecting first colors: (%s)",
-      length(cols), n_labels, paste(cols[1:n_labels], collapse=", ")
+      length(cols), n_labels, paste(cols[seq_len(n_labels)], collapse=", ")
     ))
-    cols <- cols[1:n_labels]
+    cols <- cols[seq_len(n_labels)]
   } else if (n_labels > 0L && length(cols) < n_labels){
     warning(sprintf(
       "`colors` length (%d) is less than the number of labels in experiment (%d). Adding default extra colors.",

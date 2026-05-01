@@ -4,6 +4,7 @@ author: "Irene Marín-Goñi"
 output:
   BiocStyle::html_document:
     toc: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{SimiCviz: Visualization and Analysis of Gene Regulatory Networks}
   %\VignetteEngine{knitr::rmarkdown}
