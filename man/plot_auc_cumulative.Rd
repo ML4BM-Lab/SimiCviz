@@ -55,7 +55,7 @@ Plot AUC cumulative (ECDF) curves by label
 simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
 plot_auc_cumulative(
   simic,
-  tf_names      = c("Pms1","Ets1"),
+  tf_names      = c("MEF2D","SATB1"),
   rug           = TRUE,
   grid          = c(1L, 2L)
 )

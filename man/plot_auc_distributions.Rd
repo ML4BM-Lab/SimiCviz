@@ -56,7 +56,7 @@ Plot AUC density distributions by label
 simic <- readRDS(system.file("extdata", "simic_full.rds", package = "SimiCviz"))
 plot_auc_distributions(
   simic,
-  tf_names  = c("Pms1","Ets1"),
+  tf_names  = c("MEF2D","SATB1"),
   fill      = TRUE,
   alpha     = 0.6,
   bw_adjust = 1/8,

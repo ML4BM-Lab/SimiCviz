@@ -50,6 +50,6 @@ weights from all TFs, coloured by phenotype label. Mirrors
 simic <- readRDS(system.file("extdata", "simic_full.rds", 
                  package = "SimiCviz"))
 plot_target_weights(simic, 
-                    target_names = c("Slit2", "Kif20b"), 
+                    target_names = c("CD79A", "IGHM"), 
                     labels = c(0, 1), grid = c(2, 1))
 }

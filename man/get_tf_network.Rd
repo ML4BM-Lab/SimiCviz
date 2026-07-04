@@ -30,8 +30,8 @@ in each label. Targets whose adjusted R² falls below
  # Example usage
   simic <- readRDS(system.file("extdata", "simic_full.rds", 
                     package = "SimiCviz"))
-  network <- get_tf_network(simic, c("Tet2"), 
-                            labels = c(1, 2), 
+  network <- get_tf_network(simic, c("MEF2D"), 
+                            labels = c(0, 1), 
                             r2_threshold = 0.7)
   print(network)
 

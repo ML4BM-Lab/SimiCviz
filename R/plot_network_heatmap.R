@@ -16,8 +16,8 @@
 #'  # Example usage
 #'   simic <- readRDS(system.file("extdata", "simic_full.rds", 
 #'                     package = "SimiCviz"))
-#'   network <- get_tf_network(simic, c("Tet2"), 
-#'                             labels = c(1, 2), 
+#'   network <- get_tf_network(simic, c("MEF2D"), 
+#'                             labels = c(0, 1), 
 #'                             r2_threshold = 0.7)
 #'   print(network)
 #'
@@ -112,15 +112,15 @@ get_tf_network <- function(x, tf_name, labels = NULL, r2_threshold = NULL) {
 #' @examples
 #'   simic <- readRDS(system.file("extdata", "simic_full.rds", 
 #'                                package = "SimiCviz"))
-#'   plot_tf_network_heatmap(simic, "Pms1")
+#'   plot_tf_network_heatmap(simic, "SATB1")
 #'
 #'   # Custom palette and top targets
-#'   plot_tf_network_heatmap(simic, "Ets1", top_n = 15,
+#'   plot_tf_network_heatmap(simic, "E2F4", top_n = 15,
 #'                           cmap = c("white", "red", "darkred"), 
 #'                           r2_threshold = 0.7)
 #'
 #'   # Only specific labels, no saving
-#'   plot_tf_network_heatmap(simic, "Gli3", labels = c(0, 3), 
+#'   plot_tf_network_heatmap(simic, "MEF2D", labels = c(0, 2), 
 #'                           show_values = FALSE)
 #'
 #' @import ggplot2

@@ -297,7 +297,7 @@
 #' @examples
 #' simic <- readRDS(system.file("extdata", "simic_full.rds", 
 #'                  package = "SimiCviz"))
-#' plot_tf_weights(simic, tf_names =c("Pms1","Tet2"),
+#' plot_tf_weights(simic, tf_names = c("MEF2D","SATB1"),
 #'                 top_n = 20, grid = c(2, 1))
 #' @export
 plot_tf_weights <- function(x,
@@ -350,7 +350,7 @@ plot_tf_weights <- function(x,
 #' simic <- readRDS(system.file("extdata", "simic_full.rds", 
 #'                  package = "SimiCviz"))
 #' plot_target_weights(simic, 
-#'                     target_names = c("Slit2", "Kif20b"), 
+#'                     target_names = c("CD79A", "IGHM"), 
 #'                     labels = c(0, 1), grid = c(2, 1))
 #' @export
 plot_target_weights <- function(x,
