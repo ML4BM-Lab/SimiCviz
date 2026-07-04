@@ -35,7 +35,7 @@ weight_path <- system.file("extdata", "example_weights.csv",
 auc_path <- system.file("extdata", "example_auc.csv", 
                 package = "SimiCviz")
 cell_labels_path <- system.file("extdata",
-                    file.path("inputFiles", "treatment_annotation.csv"),
+                    file.path("inputFiles", "disease_stage_annotation.csv"),
                                package = "SimiCviz")
 simic <- load_from_csv(weights_file = weight_path,
                        auc_file = auc_path,

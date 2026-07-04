@@ -58,10 +58,10 @@ weight_path <- system.file("extdata", "example_weights.csv",
                package = "SimiCviz")
 weights_df <- read_weights_csv(weight_path)
 expression_mat_path <- system.file("extdata", 
-                       file.path("inputFiles", "example1_expression.pickle"),
+                       file.path("inputFiles", "example_expression.pickle"),
                        package = "SimiCviz")
 cell_labels_path <- system.file("extdata", 
-                     file.path("inputFiles", "treatment_annotation.csv"), 
+                     file.path("inputFiles", "disease_stage_annotation.csv"), 
                       package = "SimiCviz")
 cell_labels <- load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
 

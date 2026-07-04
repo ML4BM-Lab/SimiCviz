@@ -155,7 +155,8 @@ plot_dissimilarity_heatmap <- function(x,
     ggplot2::ggsave(fpath, plot = p, width = width, height = height)
     message(sprintf("Saved dissimilarity heatmap to %s", fpath))
   } else {
-    print(p)
+    grid::grid.newpage()
+    grid::grid.draw(ggplot2::ggplotGrob(p))
   }
 
   # Remove the TF column we added for melting

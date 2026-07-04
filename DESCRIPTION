@@ -1,7 +1,7 @@
 Package: SimiCviz
 Type: Package
 Title: Visualization Tools for Gene Regulatory Network Analysis
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: 
     person(given = "Irene",
            family = "Marín-Goñi",
@@ -17,6 +17,7 @@ Description:
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
+SystemRequirements: Python (>= 3.8)
 Depends: 
     R (>= 4.6)
 Imports:

@@ -255,7 +255,8 @@ plot_tf_network_heatmap <- function(x,
     ggplot2::ggsave(fpath, plot = p, width = width, height = height)
     message(sprintf("Saved TF network heatmap to %s", fpath))
   } else {
-    print(p)
+    grid::grid.newpage()
+    grid::grid.draw(ggplot2::ggplotGrob(p))
   }
 
   # Return data without the helper "target" column

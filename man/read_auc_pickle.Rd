@@ -16,3 +16,10 @@ A named list of data.frames / matrices (one per label).
 Returns a list of matrices (one per label), each with cells in rows and
 TFs in columns.
 }
+\examples{
+# This file does not exist in the package due to size constrains, but if you have a SimiCPipeline output, you can use:
+\donttest{
+ # auc_file <- system.file("extdata",paste0("outputSimic/example_simic_wAUC.pickle"))
+ # auc_list <- read_auc_pickle(auc_file)
+}
+}

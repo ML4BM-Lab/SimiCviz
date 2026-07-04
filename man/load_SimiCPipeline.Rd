@@ -45,7 +45,7 @@ TF activity scores.
 \donttest{
 # simic_full <- load_SimiCPipeline(
 #                project_dir = "path/to/simic_run",
-#                run_name    = "example1",
+#                run_name    = "example",
 #                lambda1     = "0.01",
 #                lambda2     = "0.001")
 }

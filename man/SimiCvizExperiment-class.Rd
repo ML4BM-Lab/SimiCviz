@@ -44,7 +44,7 @@ Required for label-specific AUC visualizations.}
 }}
 
 \examples{
-#Create a SimiCvizExperiment from weights and AUC data
+# Create a SimiCvizExperiment from weights and AUC data
 weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, 
                              dimnames = list(paste0("TF", 1:3), 
                                              paste0("Gene", 1:30)))),

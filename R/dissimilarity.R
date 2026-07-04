@@ -130,8 +130,9 @@ calculate_dissimilarity <- function(x,
     result <- result[order(result$MinMax_score, decreasing = TRUE), , 
                      drop = FALSE]
     if (verbose) {
-      message(sprintf("Top 10 TFs by MinMax dissimilarity:"))
-      print(utils::head(result, 10))
+      message("Top 10 TFs by MinMax dissimilarity:")
+      message(paste(utils::capture.output(utils::head(result, 10)),
+                    collapse = "\n"))
     }
     return(result)
   }
@@ -160,7 +161,7 @@ calculate_dissimilarity <- function(x,
     auc_list <- .build_auc_list(auc_df = auc_df, cell_subset = cell_ids)
     if (verbose) {
       message(sprintf("  Group: %s (%d cells)", gname, 
-              sum(sapply(auc_list, nrow))))}
+              sum(vapply(auc_list, nrow, integer(1)))))}
     if (length(auc_list) < 2L) {
       if (verbose){
        warning(sprintf("     <2 labels with cells for '%s', skipping.", gname))
@@ -180,7 +181,8 @@ calculate_dissimilarity <- function(x,
 
   if (verbose) {
     message("Top 10 TFs by mean dissimilarity across groups:")
-    print(utils::head(result, 10))
+    message(paste(utils::capture.output(utils::head(result, 10)),
+                  collapse = "\n"))
   }
 
   result

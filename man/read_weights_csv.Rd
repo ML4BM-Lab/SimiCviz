@@ -24,12 +24,11 @@ weight_path <- system.file("extdata", "example_weights.csv",
                package = "SimiCviz")
 weights_df <- read_weights_csv(weight_path)
 head(weights_df)
-#       tf target    weight label
-# 1   Pms1 Brinp3 0.0000000     0
-# 2  Prrx2 Brinp3 1.5622762     0
-# 3   Ets1 Brinp3 0.0000000     0
-# 4   Tet2 Brinp3 0.8540945     0
-# 5 Crebrf Brinp3 0.0000000     0
-# 6   Gli3 Brinp3 0.0000000     0
-
+#      tf target     weight label
+# 1 MEF2D  RPLP1 -0.7501612     0
+# 2  E2F4  RPLP1  0.0000000     0
+# 3 SATB1  RPLP1  0.0000000     0
+# 4  IRF1  RPLP1 -0.8536968     0
+# 5  ATF6  RPLP1 -2.6133661     0
+# 6   JUN  RPLP1  0.0000000     0 
 }

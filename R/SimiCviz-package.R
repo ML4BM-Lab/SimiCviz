@@ -44,7 +44,7 @@ NULL
 #' @slot meta list with arbitrary metadata.
 #' @return An object of class \code{SimiCvizExperiment} with initialized slots.
 #' @examples
-#' #Create a SimiCvizExperiment from weights and AUC data
+#' # Create a SimiCvizExperiment from weights and AUC data
 #' weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3, 
 #'                              dimnames = list(paste0("TF", 1:3), 
 #'                                              paste0("Gene", 1:30)))),
@@ -187,17 +187,17 @@ setMethod("show", "SimiCvizExperiment", function(object) {
 #'   \code{x} is a path.
 #' @examples 
 #' cell_labels_path <- system.file("extdata", 
-#'                      file.path("inputFiles", "treatment_annotation.csv"), 
+#'                      file.path("inputFiles", "disease_stage_annotation.csv"), 
 #'                       package = "SimiCviz")
 #' cell_labels <- load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
 #' head(cell_labels)
-#'   #       cell category label
-#'   # 1 05_87_62__s5  control     0
-#'   # 2 02_84_27__s3  control     0
-#'   # 3 02_95_13__s5  control     0
-#'   # 4 06_61_12__s1  control     0
-#'   # 5 03_14_11__s5  control     0
-#'   # 6 05_46_81__s4  control     0
+#' #                             cell category label
+#' # 1 AGGGTGATCTGAGGGA-1-NBM-10.138P      NBM     0
+#' # 2  CCTAGCTTCTCCAACC-1-NBM-1.138P      NBM     0
+#' # 3 ATTACTCTCGTGGTCG-1-NBM-10.138P      NBM     0
+#' # 4  TAAGAGAAGCCGCCTA-1-NBM-8.138P      NBM     0
+#' # 5  GATCGATTCAGAGGTG-1-NBM-8.138P      NBM     0
+#' # 6 ACATCAGGTCGCGGTT-1-NBM-10.138P      NBM     0
 #' @export
 load_cell_labels <- function(x, ...) {
   if (is.data.frame(x)) {
@@ -435,8 +435,12 @@ SimiCvizExperiment <- function(weights = NULL,
     ))
   }
   # If TFs or targets are not provided, infer from WEIGHT colnames and rownames (weight is mandatory, auc si not)
-  tf_ids     <-  unique(c(sapply(weights,rownames)))
-  target_ids <-  unique(c(sapply(weights,colnames)))  
+  tf_ids <- unique(unlist(vapply(weights, function(x) list(rownames(x)),
+                                  list(character()), USE.NAMES = FALSE),
+                          use.names = FALSE))
+  target_ids <- unique(unlist(vapply(weights, function(x) list(colnames(x)),
+                                      list(character()), USE.NAMES = FALSE),
+                              use.names = FALSE))
 
   # --- label_names / colors ---
   

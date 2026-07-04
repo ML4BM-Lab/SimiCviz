@@ -18,7 +18,7 @@ Read SimiCPipeline output weights (pickle file)
 }
 \examples{
 weights_file <- system.file("extdata",  
-                file.path("outputSimic/example1_simic_weights.pickle"), 
+                file.path("outputSimic/example_simic_weights.pickle"), 
                 package = "SimiCviz")
 simic_weights <- read_weights_pickle(weights_file)
 }

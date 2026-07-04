@@ -11,36 +11,36 @@ test_that("read_weights_csv loads bundled weights correctly", {
   w <- SimiCviz::read_weights_csv(extdata("example_weights.csv"))
   expect_s3_class(w, "data.frame")
   expect_true(all(c("tf", "target", "weight", "label") %in% colnames(w)))
-  expect_equal(nrow(w), 6000L)
-  expect_equal(sort(unique(w$label)), c(0L, 1L, 2L, 3L))
+  expect_equal(nrow(w), 4500L)
+  expect_equal(sort(unique(w$label)), c(0L, 1L, 2L))
 })
 
 test_that("load_cell_labels loads bundled annotation (case-insensitive, extra cols)", {
   cl <- SimiCviz::load_cell_labels(
-    extdata("inputFiles", "treatment_annotation.csv"),
+    extdata("inputFiles", "disease_stage_annotation.csv"),
     header = TRUE, sep = ","
   )
   expect_s3_class(cl, "data.frame")
   expect_true(all(c("cell", "label") %in% colnames(cl)))
-  expect_equal(nrow(cl), 3000L)
-  expect_equal(sort(unique(cl$label)), 0L:3L)
+  expect_equal(nrow(cl), 2250)
+  expect_equal(sort(unique(cl$label)), 0L:2L)
 })
 
 test_that("read_auc_csv loads bundled AUC file (case-insensitive Cell column)", {
   a <- SimiCviz::read_auc_csv(extdata("example_auc.csv"))
   expect_s3_class(a, "data.frame")
   expect_true(all(c("cell", "tf", "score") %in% colnames(a)))
-  expect_equal(nrow(a), 30000L)
+  expect_equal(nrow(a), 22500)
 })
 
 test_that("load_from_csv builds SimiCvizExperiment from bundled CSV files", {
   obj <- SimiCviz::load_from_csv(
     weights_file     = extdata("example_weights.csv"),
-    cell_labels_file = extdata("inputFiles", "treatment_annotation.csv")
+    cell_labels_file = extdata("inputFiles", "disease_stage_annotation.csv")
   )
   expect_true(SimiCviz::is.SimiCvizExperiment(obj))
   expect_equal(length(obj@tf_ids), 10L)
-  expect_equal(sort(unique(obj@cell_labels$label)), 0L:3L)
+  expect_equal(sort(unique(obj@cell_labels$label)), 0L:2L)
 })
 
 # ── simic_full RDS ────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ test_that("simic_full.rds is a valid SimiCvizExperiment with AUC", {
   simic_full <- readRDS(extdata("simic_full.rds"))
   expect_true(SimiCviz::is.SimiCvizExperiment(simic_full))
   expect_equal(length(simic_full@tf_ids), 10L)
-  expect_equal(sort(as.integer(names(simic_full@label_names))), 0L:3L)
+  expect_equal(sort(as.integer(names(simic_full@label_names))), 0L:2L)
   expect_false(is.null(simic_full@auc$collected))
 })
 

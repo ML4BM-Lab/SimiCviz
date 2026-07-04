@@ -26,6 +26,7 @@ weights_list <- list("0" = as.data.frame(matrix(rnorm(90), nrow = 3,
                              dimnames = list(paste0("TF", 1:3), 
                                              paste0("Gene", 1:30)))))
 cell_labels <- data.frame(cell= c("Cell1", "Cell2"), label = c("0", "1"))
+set.seed(123)
 expr <- matrix(rnorm(60), nrow=2, byrow = FALSE, 
                 dimnames = list(c("Cell1", "Cell2"),paste0("Gene", 1:30)))
 
@@ -35,7 +36,7 @@ processor <- AUCProcessor(weights     = weights_list,
 processor <- compute_auc(processor, sort_by = "expression")
 auc_scores <- get_auc(processor)
 head(auc_scores)
-#           TF1       TF2       TF3
-# Cell1 0.5157082 0.5900224 0.5445804
-# Cell2 0.5139540 0.5453391 0.5365168
+ #          TF1       TF2       TF3
+ # Cell1 0.5308869 0.5307807 0.5618426
+ # Cell2 0.5752393 0.5399460 0.5304443
 }

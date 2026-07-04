@@ -40,6 +40,7 @@ setGeneric("compute_auc", function(object, ...) standardGeneric("compute_auc"))
 #'                              dimnames = list(paste0("TF", 1:3), 
 #'                                              paste0("Gene", 1:30)))))
 #' cell_labels <- data.frame(cell= c("Cell1", "Cell2"), label = c("0", "1"))
+#' set.seed(123)
 #' expr <- matrix(rnorm(60), nrow=2, byrow = FALSE, 
 #'                 dimnames = list(c("Cell1", "Cell2"),paste0("Gene", 1:30)))
 #' 
@@ -49,9 +50,9 @@ setGeneric("compute_auc", function(object, ...) standardGeneric("compute_auc"))
 #' processor <- compute_auc(processor, sort_by = "expression")
 #' auc_scores <- get_auc(processor)
 #' head(auc_scores)
-#' #           TF1       TF2       TF3
-#' # Cell1 0.5157082 0.5900224 0.5445804
-#' # Cell2 0.5139540 0.5453391 0.5365168
+#'  #          TF1       TF2       TF3
+#'  # Cell1 0.5308869 0.5307807 0.5618426
+#'  # Cell2 0.5752393 0.5399460 0.5304443
 #' @export
 setGeneric("get_auc", function(object, ...) standardGeneric("get_auc"))
 
@@ -89,26 +90,26 @@ setGeneric("get_auc", function(object, ...) standardGeneric("get_auc"))
 #'
 #' @export
 setClass(
-  "AUCProcessor",
-    slots = c(
-        weights           = "data.frame",
-        expression        = "ANY",
-        cell_labels       = "data.frame",
-        target_ids        = "character",
-        tf_ids            = "character",
-        auc_results       = "ANY",  # Changed to "ANY" to allow initialziation
-        parallel_params   = "list"
-    ),
-    prototype = list(
-        weights           = data.frame(),
-        expression        = NULL,
-        cell_labels       = data.frame(cell = character(), label = integer()),
-        target_ids        = character(),
-        tf_ids            = character(),
-        auc_results       = data.frame(), 
-        parallel_params   = list(n_cores = 1, backend = "sequential")
-    )
-)
+    "AUCProcessor",
+      slots = c(
+          weights           = "data.frame",
+          expression        = "ANY",
+          cell_labels       = "data.frame",
+          target_ids        = "character",
+          tf_ids            = "character",
+          auc_results       = "ANY",  # Changed to "ANY" to allow initialziation
+          parallel_params   = "list"
+      ),
+      prototype = list(
+          weights           = data.frame(),
+          expression        = NULL,
+          cell_labels       = data.frame(cell = character(), label = integer()),
+          target_ids        = character(),
+          tf_ids            = character(),
+          auc_results       = data.frame(), 
+          parallel_params   = list(n_cores = 1, backend = "sequential")
+      )
+  )
 
 #' Initialize AUCProcessor
 #'
@@ -141,10 +142,10 @@ setClass(
 #'                package = "SimiCviz")
 #' weights_df <- read_weights_csv(weight_path)
 #' expression_mat_path <- system.file("extdata", 
-#'                        file.path("inputFiles", "example1_expression.pickle"),
+#'                        file.path("inputFiles", "example_expression.pickle"),
 #'                        package = "SimiCviz")
 #' cell_labels_path <- system.file("extdata", 
-#'                      file.path("inputFiles", "treatment_annotation.csv"), 
+#'                      file.path("inputFiles", "disease_stage_annotation.csv"), 
 #'                       package = "SimiCviz")
 #' cell_labels <- load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
 #'

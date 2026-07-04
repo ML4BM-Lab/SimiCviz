@@ -6,7 +6,7 @@
 #' @return object containing the contents of the pickle file
 #' @examples
 #' weights_file <- system.file("extdata",  
-#'                 file.path("outputSimic/example1_simic_weights.pickle"), 
+#'                 file.path("outputSimic/example_simic_weights.pickle"), 
 #'                 package = "SimiCviz")
 #' simic_weights <- read_pickle(weights_file)
 #' @export
@@ -15,7 +15,9 @@ read_pickle <- function(file) {
     stop("Package 'reticulate' is required to read pickle files. 
           Please install it.")
   }
-  if (all(sapply(c("pickle$", "pkl$"), grepl, file), USE.NAMES = FALSE)) {
+  valid_pickle_ext <- any(vapply(c("pickle$", "pkl$"), grepl, logical(1),
+                                 x = file, USE.NAMES = FALSE))
+  if (!valid_pickle_ext) {
      stop("Expected a pickle file with extension .pickle or .pkl: ")
   }
   if (!file.exists(file)) {
@@ -38,7 +40,7 @@ read_pickle <- function(file) {
 #'         (TFs x targets).
 #' @examples
 #' weights_file <- system.file("extdata",  
-#'                 file.path("outputSimic/example1_simic_weights.pickle"), 
+#'                 file.path("outputSimic/example_simic_weights.pickle"), 
 #'                 package = "SimiCviz")
 #' simic_weights <- read_weights_pickle(weights_file)
 #' @export
@@ -72,6 +74,12 @@ read_weights_pickle <- function(file) {
 #'
 #' @param file path to a pickle file containing per-label AUC matrices.
 #' @return A named list of data.frames / matrices (one per label).
+#' @examples
+#' # This file does not exist in the package due to size constrains, but if you have a SimiCPipeline output, you can use:
+#' \donttest{
+#'  # auc_file <- system.file("extdata",paste0("outputSimic/example_simic_wAUC.pickle"))
+#'  # auc_list <- read_auc_pickle(auc_file)
+#' }
 #' @export
 read_auc_pickle <- function(file) {
   auc_list <- read_pickle(file)
@@ -93,7 +101,7 @@ read_auc_pickle <- function(file) {
 #' @return A data.frame with cell IDs as row names.
 #' @examples
 #' auc_file <- system.file("extdata",
-#'               file.path("outputSimic/example1_simic_auc_collected.csv"),
+#'               file.path("outputSimic/example_simic_auc_collected.csv"),
 #'              package = "SimiCviz")
 #' auc_df <- load_collected_auc(auc_file)
 #' @export
@@ -121,14 +129,13 @@ load_collected_auc <- function(file, ...) {
 #'                package = "SimiCviz")
 #' weights_df <- read_weights_csv(weight_path)
 #' head(weights_df)
-#' #       tf target    weight label
-#' # 1   Pms1 Brinp3 0.0000000     0
-#' # 2  Prrx2 Brinp3 1.5622762     0
-#' # 3   Ets1 Brinp3 0.0000000     0
-#' # 4   Tet2 Brinp3 0.8540945     0
-#' # 5 Crebrf Brinp3 0.0000000     0
-#' # 6   Gli3 Brinp3 0.0000000     0
-#' 
+#' #      tf target     weight label
+#' # 1 MEF2D  RPLP1 -0.7501612     0
+#' # 2  E2F4  RPLP1  0.0000000     0
+#' # 3 SATB1  RPLP1  0.0000000     0
+#' # 4  IRF1  RPLP1 -0.8536968     0
+#' # 5  ATF6  RPLP1 -2.6133661     0
+#' # 6   JUN  RPLP1  0.0000000     0 
 #' @export
 read_weights_csv <- function(file, ...) {
   df <- utils::read.csv(file, header = TRUE,
@@ -411,7 +418,7 @@ auc_list_to_df <- function(auc_list, cell_labels_df) {
 #' @return expression matrix
 #' @examples
 #' expression_mat_path <- system.file("extdata", 
-#'                        file.path("inputFiles", "example1_expression.pickle"),
+#'                        file.path("inputFiles", "example_expression.pickle"),
 #'                        package = "SimiCviz")
 #' expression_mat <- load_expression_matrix(expression_mat_path)
 #' @export
@@ -488,7 +495,7 @@ load_expression_matrix <- function(expression) {
 #' \donttest{
 #' # simic_full <- load_SimiCPipeline(
 #' #                project_dir = "path/to/simic_run",
-#' #                run_name    = "example1",
+#' #                run_name    = "example",
 #' #                lambda1     = "0.01",
 #' #                lambda2     = "0.001")
 #' }
@@ -660,7 +667,7 @@ load_SimiCPipeline <- function(project_dir,
 #' auc_path <- system.file("extdata", "example_auc.csv", 
 #'                 package = "SimiCviz")
 #' cell_labels_path <- system.file("extdata",
-#'                     file.path("inputFiles", "treatment_annotation.csv"),
+#'                     file.path("inputFiles", "disease_stage_annotation.csv"),
 #'                                package = "SimiCviz")
 #' simic <- load_from_csv(weights_file = weight_path,
 #'                        auc_file = auc_path,
@@ -740,6 +747,10 @@ load_from_csv <- function(weights_file,
 #' @param overwrite logical; overwrite existing files.
 #'
 #' @return Invisibly, a list of file paths.
+#' @examples
+#'   simic <- readRDS(system.file("extdata", "simic_full.rds",
+#'                                 package = "SimiCviz"))
+#'   export_SimiCviz_csv(simic, out_dir = tempdir(), prefix = "simic_export")
 #' @export
 export_SimiCviz_csv <- function(x,
                                 out_dir,

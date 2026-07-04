@@ -25,3 +25,8 @@ Exports weights and AUC tables into an organized directory structure:
 \item{data/auc}{AUC tables (collected cells × TF format)}
 }
 }
+\examples{
+  simic <- readRDS(system.file("extdata", "simic_full.rds",
+                                package = "SimiCviz"))
+  export_SimiCviz_csv(simic, out_dir = tempdir(), prefix = "simic_export")
+}

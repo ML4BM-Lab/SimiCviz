@@ -7,6 +7,18 @@ knitr::opts_chunk$set(
 options(width=60)
 library(SimiCviz)
 
+## ----eval = FALSE-----------------------------------------
+#  if (!requireNamespace("remotes", quietly = TRUE)) {
+#    install.packages("remotes")
+#  }
+#  remotes::install_github("ML4BM-Lab/SimiCviz")
+
+## ----eval = FALSE-----------------------------------------
+#  if (!requireNamespace("BiocManager", quietly = TRUE)) {
+#    install.packages("BiocManager")
+#  }
+#  BiocManager::install("SimiCviz")
+
 ## ----echo = FALSE-----------------------------------------
 simic_full <- readRDS(system.file("extdata", file.path("simic_full.rds"), 
                                   package = "SimiCviz"))
@@ -25,8 +37,8 @@ simic_full <- readRDS(system.file("extdata", file.path("simic_full.rds"),
 #  # Set display names and colors for visualization (Part 3)
 #  simic_full <- setLabelNames(
 #    simic_full,
-#    label_names = c("control", "PD-L1", "DAC", "Combination"),
-#    colors = c("#e0e0e0", "#a8c8ff", "#ffb6b6", "#c1a9e0")
+#    label_names  = c('NBM', 'SMM', 'MM'),
+#    colors = c("#3B7EA1", "#E66101", "#B2182B")
 #  )
 
 ## ---------------------------------------------------------
@@ -36,7 +48,7 @@ simic_full
 
 # Load weights from pickle
 weights_file <- system.file("extdata", 
-  file.path("outputSimic/example1_simic_weights.pickle"), 
+  file.path("outputSimic/example_simic_weights.pickle"), 
   package = "SimiCviz")
 
 simic_weights <- read_weights_pickle(weights_file)
@@ -58,7 +70,7 @@ head(weights_df)
 ## ---------------------------------------------------------
 # Load from CSV (recommended format: columns 'cell', 'label')
 cell_labels_path <- system.file("extdata",
-  file.path("inputFiles", "treatment_annotation.csv"), 
+  file.path("inputFiles", "disease_stage_annotation.csv"), 
   package = "SimiCviz")
 
 cell_labels <- load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
@@ -77,7 +89,7 @@ head(cell_labels)
 ## ---------------------------------------------------------
 # Load from multiple formats
 expression_mat_path <- system.file("extdata",
-  file.path("inputFiles", "example1_expression.pickle"),
+  file.path("inputFiles", "example_expression.pickle"),
   package = "SimiCviz")
 
 # Will auto-detect format and load
@@ -96,8 +108,8 @@ viz_obj_simic <- SimiCvizExperiment(
   weights = simic_weights,
   auc = NULL,  # Will compute this in the next section later but can be loaded as well
   cell_labels = cell_labels,
-  label_names = c("control","PD-L1","DAC","Combination"),
-  colors = c("#e0e0e0", "#a8c8ff", "#ffb6b6", "#c1a9e0"),
+  label_names = c('NBM', 'SMM', 'MM'),
+  colors = c("#3B7EA1", "#E66101", "#B2182B"),
   meta=list(adjusted_r_squared=adjusted_r_squared))
 
 viz_obj_simic
@@ -219,8 +231,9 @@ head(auc_long)
 simic <- SimiCvizExperiment(weights = simic_weights,
                              auc = auc_wide,
                              cell_labels = cell_labels,
-                             label_names = c("control","PD-L1","DAC","Combination"),
-                             colors = c("#e0e0e0", "#a8c8ff", "#ffb6b6", "#c1a9e0"))
+                             label_names = c("NBM","SMM","MM"),
+                             colors = c("#3B7EA1", "#E66101", "#B2182B"),
+                             meta = list(adjusted_r_squared = adjusted_r_squared))
 simic
 
 ## ----echo = FALSE-----------------------------------------
@@ -235,7 +248,7 @@ plot_dir <- file.path(getwd(),"SimiCviz_output","plots")
 # Extract Adjusted R squared from SimiC outputs
 out <- read_pickle(weights_file)
 adjusted_r_squared <- out$adjusted_r_squared
-plot_r2_distribution(adjusted_r_squared, simic, grid = c(2, 2), 
+plot_r2_distribution(adjusted_r_squared, simic, grid = c(1, 3), 
                      save = FALSE, out_dir = plot_dir)
 
 ## ---------------------------------------------------------
@@ -270,7 +283,7 @@ plot_tf_weights(
 plot_target_weights(
   simic,
   target_names = simic@target_ids[1:4],
-  labels = c("control", "Combination"),
+  labels = c("NBM", "SMM"),
   grid = c(2, 2),
   save = FALSE,
   out_dir = plot_dir,
@@ -297,10 +310,10 @@ all_tfs_barplots <- plot_tf_weights(
 all_tfs_barplots[[1]]
 
 ## ---------------------------------------------------------
-network <- get_tf_network(simic, "Tet2", r2_threshold = 0.7)
+network <- get_tf_network(simic, "MEF2D", r2_threshold = 0.7)
 print(head(network))
 
-plot_tf_network_heatmap(simic, "Tet2", 
+plot_tf_network_heatmap(simic, "MEF2D", 
                         save = FALSE, 
                         top_n = 15,
                         r2_threshold = 0.7,
@@ -323,30 +336,29 @@ metadata <- read.csv(system.file("extdata/metadata.csv",
   package = "SimiCviz"))
  
 # Build cell groups from metadata (e.g. Seurat clusters, cell types, etc.)
-cell_groups  <- lapply(unique(metadata$final_annotation_functional), 
-                       function(celltype) {
-  cell_labels$cell[metadata$final_annotation_functional == celltype]
+cell_groups  <- lapply(unique(metadata$cluster), 
+                       function(cluster) {
+  cell_labels$cell[metadata$cluster == cluster]
 })
-names(cell_groups) <- unique(metadata$final_annotation_functional)
+names(cell_groups) <- unique(metadata$cluster)
 
-dissim_grouped <- calculate_dissimilarity(simic, labels = c(0,2),
+dissim_grouped <- calculate_dissimilarity(simic, labels = c(1,2),
                                           cell_groups = cell_groups)
 
 # For all labels
 plot_dissimilarity_heatmap(simic,
                             cell_groups = cell_groups, 
-                            top_n = 5,
+                            top_n = 8,
+                            labels=c(1,2),
                             cmap=c("magma"),
-                            save = FALSE, out_dir = plot_dir,
-                            filename = "dissimilarity_heatmap_grouped.pdf")
+                            save = FALSE)
 
 ## ---------------------------------------------------------
 # For labels 0,2
 plot_dissimilarity_heatmap(simic,
-                            labels = c(0,2),
                             cell_groups = cell_groups, 
                             top_n = 5, 
-                            sort_by = "Proliferating.cells",
+                            sort_by = "healthy",
                             cmap=c("red", "white", "blue"),
                             save = FALSE)
 
@@ -368,7 +380,7 @@ plot_auc_distributions(
 ## ----fig.height=5, fig.width=10---------------------------
 # Plot top 4 TFs density distributions
 plot_auc_distributions(simic,
-                       labels = c(0,3),
+                       labels = c(0,2),
                        tf_names = top_tfs[1:2],
                        fill = FALSE,
                        bw_adjust = 0.5,

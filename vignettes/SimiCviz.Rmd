@@ -21,7 +21,7 @@ options(width=60)
 library(SimiCviz)
 ```
 
-# Overview
+# Introduction
 
 **SimiCviz** provides various utilities for gene regulatory network (GRN) analysis for single-cell RNA-seq data. Originally developed to visualize the phenotype-specific GRN output from [**`SimiCPipeline`**](https://github.com/ML4BM-Lab/SimiCPipeline.git) for `R` users, it also includes tools for:
 
@@ -31,9 +31,64 @@ library(SimiCviz)
 
 The package is interoperable and agnostic to the GRN inference methods, accepting different GRN outputs.
 
- 
+## Relationship to Similar Packages
+
+Packages such as `SCENIC` and `Pando` focus on reconstructing or modelling
+gene regulatory networks from single-cell data, often producing regulons,
+TF-target links, activity estimates, or statistical evidence for regulatory
+interactions. `SimiCviz` is complementary to these tools. It does not replace
+their inference workflows or duplicate their visualization implementations; 
+instead, it provides a common downstream interface for loading GRN outputs, 
+organizing TF-target weights and cell annotations, computing compatible activity
+scores when expression data are available, and generating comparative 
+visualizations across phenotypes or cell groups.
+
+For `SimiCPipeline` outputs, `SimiCviz` provides direct readers for the
+standard directory structure and pickle/CSV files. For other methods, including
+`SCENIC`, `Pando`, or custom GRN workflows, users can import a long-format table
+with transcription factors, targets, weights, and optional quality metrics such
+as adjusted p-values or model-fit statistics.
+
+# Installation
+
+The development version can be installed from GitHub:
+
+```{r, eval = FALSE}
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+remotes::install_github("ML4BM-Lab/SimiCviz")
+```
+
+Some import helpers use `reticulate` to read Python-backed formats such as
+pickle or H5AD files. When those functions are called, `SimiCviz` requests a
+Python environment through `reticulate::py_require()` with Python >= 3.8 and
+the `numpy`, `pandas`, and `anndata` Python packages. These Python dependencies
+are only needed for those import paths; CSV and R-native workflows do not
+require them.
+
+
+The package will be available from Bioconductor upon approval:
+
+```{r, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+BiocManager::install("SimiCviz")
+```
+
 
 # Loading GRN Data
+
+## Example Dataset
+
+The examples in this vignette use a reduced dataset derived from the
+[`SimiC-Suite` case study](https://ml4bm-lab.github.io/ML4BM-Lab/software/SimiC-Suite/src/case-study.html).
+The original dataset is a single-cell RNA-seq dataset of multiple myeloma (MM) patients, including healthy donors and patients at different disease stages (Boiarsky et al. 2022).
+The raw data is available from the [GEO repository](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE193531) (GSE193531).
+We followed the workflow described in the tutorial and then generated a smaller subset for Bioconductor vignette examples, keeping representative
+SimiCPipeline outputs for the `NBM`, `SMM`, and `MM` disease-stage labels while
+limiting the package size and vignette runtime. Exact code used is included in `inst/scripts/generate_example.ipynb` and `generate_simicfull.R`.
 
 ## Data Format Requirements
 SimiCviz easily handles `SimiCPipeline` outputs but also accepts GRN weights in a flexible long format. The input `data.frame` must include the following columns: 
@@ -96,8 +151,8 @@ simic_full <- load_SimiCPipeline(
 # Set display names and colors for visualization (Part 3)
 simic_full <- setLabelNames(
   simic_full, 
-  label_names = c("control", "PD-L1", "DAC", "Combination"),
-  colors = c("#e0e0e0", "#a8c8ff", "#ffb6b6", "#c1a9e0")
+  label_names  = c('NBM', 'SMM', 'MM'),
+  colors = c("#3B7EA1", "#E66101", "#B2182B")
 )
 ```
 
@@ -116,7 +171,7 @@ If you need more flexibility in the workflow, or have precomputed outputs using 
 
 # Load weights from pickle
 weights_file <- system.file("extdata", 
-  file.path("outputSimic/example1_simic_weights.pickle"), 
+  file.path("outputSimic/example_simic_weights.pickle"), 
   package = "SimiCviz")
 
 simic_weights <- read_weights_pickle(weights_file)
@@ -158,7 +213,6 @@ tf, target, weight, pvalue, adj_p_val
 tf, target, weight, label, pvalue, adj_p_val
 ```
 
- 
 
 ### Cell Labels / Phenotype Annotations
 
@@ -167,7 +221,7 @@ The `cell_labels` map each cell ID in your expression matrix or activity scores 
 ```{r}
 # Load from CSV (recommended format: columns 'cell', 'label')
 cell_labels_path <- system.file("extdata",
-  file.path("inputFiles", "treatment_annotation.csv"), 
+  file.path("inputFiles", "disease_stage_annotation.csv"), 
   package = "SimiCviz")
 
 cell_labels <- load_cell_labels(cell_labels_path, header = TRUE, sep = ",")
@@ -203,7 +257,7 @@ Only required for computing activity scores. Can be:
 ```{r}
 # Load from multiple formats
 expression_mat_path <- system.file("extdata",
-  file.path("inputFiles", "example1_expression.pickle"),
+  file.path("inputFiles", "example_expression.pickle"),
   package = "SimiCviz")
 
 # Will auto-detect format and load
@@ -229,8 +283,8 @@ viz_obj_simic <- SimiCvizExperiment(
   weights = simic_weights,
   auc = NULL,  # Will compute this in the next section later but can be loaded as well
   cell_labels = cell_labels,
-  label_names = c("control","PD-L1","DAC","Combination"),
-  colors = c("#e0e0e0", "#a8c8ff", "#ffb6b6", "#c1a9e0"),
+  label_names = c('NBM', 'SMM', 'MM'),
+  colors = c("#3B7EA1", "#E66101", "#B2182B"),
   meta=list(adjusted_r_squared=adjusted_r_squared))
 
 viz_obj_simic
@@ -413,8 +467,9 @@ If you used other methods to calculate cell-specific activity scores with a diff
 simic <- SimiCvizExperiment(weights = simic_weights,
                              auc = auc_wide,
                              cell_labels = cell_labels,
-                             label_names = c("control","PD-L1","DAC","Combination"),
-                             colors = c("#e0e0e0", "#a8c8ff", "#ffb6b6", "#c1a9e0"))
+                             label_names = c("NBM","SMM","MM"),
+                             colors = c("#3B7EA1", "#E66101", "#B2182B"),
+                             meta = list(adjusted_r_squared = adjusted_r_squared))
 simic
 ```
 After you created a `SimiCvizExperiment` object, we can use the plotting functions to visualize the results.
@@ -434,7 +489,7 @@ To assess the goodness of SimiC's fitted model of target expression we can plot 
 # Extract Adjusted R squared from SimiC outputs
 out <- read_pickle(weights_file)
 adjusted_r_squared <- out$adjusted_r_squared
-plot_r2_distribution(adjusted_r_squared, simic, grid = c(2, 2), 
+plot_r2_distribution(adjusted_r_squared, simic, grid = c(1, 3), 
                      save = FALSE, out_dir = plot_dir)
 ```
 Here we can see that most of the R² values are over 0.7, indicating that the model explains a significant portion of the variance in the target gene expression. 
@@ -492,7 +547,7 @@ Now we will plot the regulators of each target. This plot shows only the TFs wit
 plot_target_weights(
   simic,
   target_names = simic@target_ids[1:4],
-  labels = c("control", "Combination"),
+  labels = c("NBM", "SMM"),
   grid = c(2, 2),
   save = FALSE,
   out_dir = plot_dir,
@@ -526,10 +581,10 @@ all_tfs_barplots[[1]]
 ### Regulatory Network Heatmap
 You can extract a TF regulon with the function `get_tf_network` and plot it as a heatmap.
 ```{r}
-network <- get_tf_network(simic, "Tet2", r2_threshold = 0.7)
+network <- get_tf_network(simic, "MEF2D", r2_threshold = 0.7)
 print(head(network))
 
-plot_tf_network_heatmap(simic, "Tet2", 
+plot_tf_network_heatmap(simic, "MEF2D", 
                         save = FALSE, 
                         top_n = 15,
                         r2_threshold = 0.7,
@@ -563,32 +618,31 @@ metadata <- read.csv(system.file("extdata/metadata.csv",
   package = "SimiCviz"))
  
 # Build cell groups from metadata (e.g. Seurat clusters, cell types, etc.)
-cell_groups  <- lapply(unique(metadata$final_annotation_functional), 
-                       function(celltype) {
-  cell_labels$cell[metadata$final_annotation_functional == celltype]
+cell_groups  <- lapply(unique(metadata$cluster), 
+                       function(cluster) {
+  cell_labels$cell[metadata$cluster == cluster]
 })
-names(cell_groups) <- unique(metadata$final_annotation_functional)
+names(cell_groups) <- unique(metadata$cluster)
 
-dissim_grouped <- calculate_dissimilarity(simic, labels = c(0,2),
+dissim_grouped <- calculate_dissimilarity(simic, labels = c(1,2),
                                           cell_groups = cell_groups)
 
 # For all labels
 plot_dissimilarity_heatmap(simic,
                             cell_groups = cell_groups, 
-                            top_n = 5,
+                            top_n = 8,
+                            labels=c(1,2),
                             cmap=c("magma"),
-                            save = FALSE, out_dir = plot_dir,
-                            filename = "dissimilarity_heatmap_grouped.pdf")
+                            save = FALSE)
 ```
 
 We can also select the labels across which we want to compute the dissimilarity score with the argument `labels` and customize the color and sorting options.
 ```{r}
 # For labels 0,2
 plot_dissimilarity_heatmap(simic,
-                            labels = c(0,2),
                             cell_groups = cell_groups, 
                             top_n = 5, 
-                            sort_by = "Proliferating.cells",
+                            sort_by = "healthy",
                             cmap=c("red", "white", "blue"),
                             save = FALSE)
 ```
@@ -621,7 +675,7 @@ plot_auc_distributions(
 ```{r fig.height=5, fig.width=10}
 # Plot top 4 TFs density distributions
 plot_auc_distributions(simic,
-                       labels = c(0,3),
+                       labels = c(0,2),
                        tf_names = top_tfs[1:2],
                        fill = FALSE,
                        bw_adjust = 0.5,

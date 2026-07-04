@@ -31,7 +31,7 @@ Allowed formats:
 }
 \examples{
 expression_mat_path <- system.file("extdata", 
-                       file.path("inputFiles", "example1_expression.pickle"),
+                       file.path("inputFiles", "example_expression.pickle"),
                        package = "SimiCviz")
 expression_mat <- load_expression_matrix(expression_mat_path)
 }

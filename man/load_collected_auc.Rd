@@ -22,7 +22,7 @@ produces per-cell TF activity scores.
 }
 \examples{
 auc_file <- system.file("extdata",
-              file.path("outputSimic/example1_simic_auc_collected.csv"),
+              file.path("outputSimic/example_simic_auc_collected.csv"),
              package = "SimiCviz")
 auc_df <- load_collected_auc(auc_file)
 }

@@ -236,7 +236,7 @@ plot_auc_distributions <- function(x, tf_names = NULL, labels = NULL,
       ggplot2::ggtitle(tf, subtitle = paste("Dissimilarity score:",
                                              signif(diss_score[tf, "MinMax_score"], 3))) +
       ggplot2::theme_classic() +
-      ggplot2::theme(legend.position = c(1, 1), legend.justification = c(1, 1),
+      ggplot2::theme(legend.position.inside = c(1, 1), legend.justification = c(1, 1),
                      legend.direction = "vertical",
                      plot.title = ggplot2::element_text(face = "bold", size = 12))
     plot_list[[length(plot_list) + 1L]] <- p
@@ -626,7 +626,8 @@ plot_auc_heatmap <- function(x, tf_names = NULL, labels = NULL, top_n = NULL,
     ggplot2::ggsave(fpath, p, width = width, height = height)
     message("Saved AUC heatmap to: ", fpath)
   } else {
-    print(p)
+    grid::grid.newpage()
+    grid::grid.draw(ggplot2::ggplotGrob(p))
   }
   invisible(p)
 }
